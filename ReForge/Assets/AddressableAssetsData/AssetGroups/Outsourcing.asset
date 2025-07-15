@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Outsourcing
+  m_EditorClassIdentifier: 
+  m_GroupName: Outsourcing
+  m_GUID: d85100209befd484ea70ee53fd912841
+  m_SerializeEntries:
+  - m_GUID: 0d36c64694692ea47a1666ccc8d36c77
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b524c524c093994db2bf4dc49cacd3d
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4356aa80380bc684abe1ef734d0f309d
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47f81b58f5a00114aada9ea25e0d5ee4
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50b461ebe99182d499833a0e8633c83a
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a64463dbfee96c84796e4088a50fc17e
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c04f14926fadd2e4a8925deb2377606a
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2496c356f832a5489dac051bd0b86b9
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cde98b4b57d02264bb69a1ff0543709e
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData 9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc61e646db0b840478e232211c4898c1
+    m_Address: Assets/ScriptableObject/Outsourcing/OutsourcingData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Outsourcing
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1fff9770450d0454f9bed001f08e4aee, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: eef80a6471d8af84d98fcdc7697ca3e3, type: 2}
+    - {fileID: 11400000, guid: 78768c34c82170f4c8381447e756ac4d, type: 2}
