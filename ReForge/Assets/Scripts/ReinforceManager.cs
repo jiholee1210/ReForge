@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class ReinforceManager : MonoBehaviour, IWindow
 {
     [SerializeField] private Button upgradeBtn;
+    [SerializeField] private Button outsourcingBtn;
+    [SerializeField] private Button projectBtn;
+
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private Transform unitParent;
 
@@ -25,6 +28,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         Setting();
         upgradeBtn.onClick.AddListener(() => TryUpgrade());
+        outsourcingBtn.onClick.AddListener(() => PlaceOutsourcing());
+        projectBtn.onClick.AddListener(() => PlaceProject());
 
         await DataManger.Instance.WaitForLoadingUnitData();
         Reset();
@@ -57,6 +62,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
         List<GameObject> unitList = new();
         foreach (UnitInfo unitInfo in unit.units)
         {
+            if (unitInfo.place != 0) continue;
             int id = unitInfo.id;
             int upgrade = unitInfo.upgrade;
             UnitData unitData = DataManger.Instance.GetUnitData(id);
@@ -203,11 +209,23 @@ public class ReinforceManager : MonoBehaviour, IWindow
             for (int i = 0; i < upgrade + 2; i++)
             {
                 GameObject star = Instantiate(starPrefab, unitUpgrade.GetChild(3).GetChild(1));
-                
-                star.transform.localPosition += new Vector3((-3.5f * (upgrade+1)) + (7f * i), 0, 0);
+
+                star.transform.localPosition += new Vector3((-3.5f * (upgrade + 1)) + (7f * i), 0, 0);
             }
         }
         // 각 단계마다 1성~3성, 3성 강화 시 다음 단계로 성장
         unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + unitData.posibility;
+    }
+
+    private void PlaceOutsourcing()
+    {
+        curUnit.place = 1;
+        Reset();
+    }
+
+    private void PlaceProject()
+    {
+        curUnit.place = 2;
+        Reset();
     }
 }

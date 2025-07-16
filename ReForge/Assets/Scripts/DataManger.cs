@@ -20,6 +20,7 @@ public class DataManger : MonoBehaviour
     public ShopUnit shopUnit;
 
     private Task waitForUnitData;
+    private Task waitForOutsourcingData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -33,7 +34,7 @@ public class DataManger : MonoBehaviour
         shopUnit = new();
 
         waitForUnitData = LoadUnitData();
-        LoadOutsourcingData();
+        waitForOutsourcingData = LoadOutsourcingData();
         //LoadProjectData();
         //LoadTempUpgradeData();
         //LoadPermUpgradeData();
@@ -57,7 +58,7 @@ public class DataManger : MonoBehaviour
         await handle.Task;
     }
 
-    private async void LoadOutsourcingData()
+    private async Task LoadOutsourcingData()
     {
         outsourcingDataDict = new Dictionary<int, OutsourcingData>();
         var handle = Addressables.LoadAssetsAsync<OutsourcingData>("Outsourcing", outsourcing =>
@@ -104,6 +105,11 @@ public class DataManger : MonoBehaviour
     public Task WaitForLoadingUnitData()
     {
         return waitForUnitData;
+    }
+
+    public Task WaitForLoadingOutsourcingData()
+    {
+        return waitForOutsourcingData;
     }
 
     public UnitData GetUnitData(int id)

@@ -91,6 +91,13 @@ public class ShopManager : MonoBehaviour, IWindow
                 place = 0
             };
             unit.units.Add(unitInfo);
+            unit.units.Sort((a, b) =>
+            {
+                int cmp = a.id.CompareTo(b.id);
+                if (cmp != 0) return cmp;
+
+                return a.upgrade.CompareTo(b.upgrade);
+            });
             // 골드 텍스트 수정 추가
             if (!shopUnit.canBuy.Contains(unitData.nextUnit))
             {
