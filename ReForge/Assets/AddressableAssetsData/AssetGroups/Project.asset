@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Project
+  m_EditorClassIdentifier: 
+  m_GroupName: Project
+  m_GUID: d3accd935f15f7042b293b160c2250d8
+  m_SerializeEntries:
+  - m_GUID: 04c9506ce272a52499cc3cdcf9ac2540
+    m_Address: Assets/ScriptableObject/Project/ProjectData 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1011d4875f7af0b4d9b6f16dda688a02
+    m_Address: Assets/ScriptableObject/Project/ProjectData 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 368d97378183f0844ba2545aa59e144a
+    m_Address: Assets/ScriptableObject/Project/ProjectData 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3997ee5d581da694eb69754396027b88
+    m_Address: Assets/ScriptableObject/Project/ProjectData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88863ea376a775f40a8bd7874802b4c6
+    m_Address: Assets/ScriptableObject/Project/ProjectData 9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aab3b74be314bc3479d1d3bc7656b6e9
+    m_Address: Assets/ScriptableObject/Project/ProjectData 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac75d9eeeb554be458a22f0cec168112
+    m_Address: Assets/ScriptableObject/Project/ProjectData 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b151a5acce2d1e149901ae4569689604
+    m_Address: Assets/ScriptableObject/Project/ProjectData 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0cb2e49924b3f54d817942644a2c1b3
+    m_Address: Assets/ScriptableObject/Project/ProjectData 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f62aac466809f9d4784023cf26fb8328
+    m_Address: Assets/ScriptableObject/Project/ProjectData 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Project
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1fff9770450d0454f9bed001f08e4aee, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: eb5d8acace2c64d4f891fad4e7b83946, type: 2}
+    - {fileID: 11400000, guid: 1fdb91f1861af604a8ee30c9f3e0f65a, type: 2}

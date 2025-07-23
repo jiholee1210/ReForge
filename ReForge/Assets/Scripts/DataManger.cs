@@ -35,8 +35,8 @@ public class DataManger : MonoBehaviour
 
         waitForUnitData = LoadUnitData();
         waitForOutsourcingData = LoadOutsourcingData();
-        //LoadProjectData();
-        //LoadTempUpgradeData();
+        LoadProjectData();
+        LoadTempUpgradeData();
         //LoadPermUpgradeData();
 
         goods.gold += 100000;
@@ -162,8 +162,7 @@ public class ShopUnit
 
 public class TempUpgrade
 {
-    public List<int> canUpgrade = new();
-    public List<int> complete = new();
+    public int[] upgrade = new int[6];
 }
 
 public class PermUpgrade

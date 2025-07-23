@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "OutsourcingData", menuName = "OutsourcingData", order = 0)]
@@ -7,5 +8,4 @@ public class OutsourcingData : ScriptableObject
     public string dataName;
     public float max;
     public int reward;
-    public GameObject prefab;
 }

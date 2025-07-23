@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 9
   dataName: "+9 \uC77C\uBC18\uC778"
-  power: 0
-  posibility: 90
+  power: 15
+  posibility: 50
   price: 100
   nextUnit: 0
   sprite: {fileID: -3455839168180757821, guid: 3649c04157133fc478c5ce0f111898c6, type: 3}

@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   dataName: "\uC77C\uC790\uB9AC \uC13C\uD130"
-  max: 0
-  reward: 0
-  prefab: {fileID: 9102844475605470932, guid: 69e370493df7b9047953bc0ed6f9f600, type: 3}
+  max: 1000
+  reward: 1000

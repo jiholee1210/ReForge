@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dff31b113115384e91f14b471b2b5e4, type: 3}
   m_Name: OutsourcingData 2
   m_EditorClassIdentifier: 
-  id: 0
+  id: 2
   dataName: "\uC218\uB825 \uBC1C\uC804\uC18C"
-  max: 0
-  reward: 0
-  prefab: {fileID: 2216004198246194075, guid: d654be5a338ca9e4492c40b31fead73f, type: 3}
+  max: 1000
+  reward: 1000

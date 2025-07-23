@@ -7,5 +7,4 @@ public class ProjectData : ScriptableObject
     public string dataName;
     public float max;
     public int reward;
-    public GameObject prefab;
 }

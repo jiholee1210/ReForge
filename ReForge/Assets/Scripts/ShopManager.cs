@@ -33,21 +33,17 @@ public class ShopManager : MonoBehaviour, IWindow
             shopUnit.canBuy.Add(0);
             Debug.Log("초기 리스트 추가");
         }
-
-        if (tempUpgrade.canUpgrade.Count == 0 && tempUpgrade.complete.Count == 0)
-        {
-            //tempUpgrade.canUpgrade.Add(0);
-        }
     }
 
     public void Reset()
     {
-        foreach (Transform transform in unitParent)
-        {
-            Destroy(transform.gameObject);
-        }
+        ResetUnit();
+        ResetUpgrade();
+    }
 
-        foreach (Transform transform in upgradeParent)
+    private void ResetUnit()
+    {
+        foreach (Transform transform in unitParent)
         {
             Destroy(transform.gameObject);
         }
@@ -61,18 +57,27 @@ public class ShopManager : MonoBehaviour, IWindow
             unitItem.transform.GetChild(0).GetComponent<Image>().sprite = unitData.sprite;
             unitItem.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
             unitItem.transform.GetChild(1).GetComponent<TMP_Text>().text = unitData.dataName;
-            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = unitData.price + " 골드";
+            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = (int)(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value)) + " 골드";
             unitItem.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
         }
+    }
 
-        tempUpgrade.canUpgrade.Sort();
-        foreach (int id in tempUpgrade.canUpgrade)
+    private void ResetUpgrade()
+    {
+        foreach (Transform transform in upgradeParent)
         {
+            Destroy(transform.gameObject);
+        }
+
+        for (int i = 0; i < tempUpgrade.upgrade.Length; i++)
+        {
+            int id = i;
             TempUpgradeData tempUpgradeData = DataManger.Instance.GetTempUpgradeData(id);
 
             GameObject upgradeItem = Instantiate(upgradePrefab, upgradeParent);
             upgradeItem.transform.GetChild(1).GetComponent<TMP_Text>().text = tempUpgradeData.dataName;
             upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = tempUpgradeData.price + " 골드";
+            upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
             upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
         }
     }
@@ -80,10 +85,10 @@ public class ShopManager : MonoBehaviour, IWindow
     private void BuyUnit(int id)
     {
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-
-        if (goods.gold >= unitData.price)
+        int finalPrice = (int)(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value));
+        if (goods.gold >= finalPrice)
         {
-            goods.gold -= unitData.price;
+            goods.gold -= finalPrice;
             UnitInfo unitInfo = new UnitInfo
             {
                 id = id,
@@ -99,6 +104,7 @@ public class ShopManager : MonoBehaviour, IWindow
                 return a.upgrade.CompareTo(b.upgrade);
             });
             // 골드 텍스트 수정 추가
+            UIManager.Instance.SetGoldText();
             if (!shopUnit.canBuy.Contains(unitData.nextUnit))
             {
                 shopUnit.canBuy.Add(unitData.nextUnit);
@@ -109,7 +115,7 @@ public class ShopManager : MonoBehaviour, IWindow
             Debug.Log("골드가 부족합니다.");
         }
 
-        Reset();
+        ResetUnit();
     }
 
     private void BuyUpgrade(int id)
@@ -119,18 +125,15 @@ public class ShopManager : MonoBehaviour, IWindow
         if (goods.gold >= tempUpgradeData.price)
         {
             goods.gold -= tempUpgradeData.price;
-            tempUpgrade.complete.Add(id);
-            tempUpgrade.canUpgrade.Remove(id);
-            foreach (int next in tempUpgradeData.nextUpgrade)
-            {
-                tempUpgrade.canUpgrade.Add(next);
-            }
+            tempUpgrade.upgrade[id]++;
             // 골드 텍스트 수정 추가
+            UIManager.Instance.SetGoldText();
         }
         else
         {
             Debug.Log("골드가 부족합니다.");
         }
-        Reset();
+        ResetUpgrade();
+        ResetUnit();
     }
 }
