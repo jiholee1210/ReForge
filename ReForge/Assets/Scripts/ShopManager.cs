@@ -1,4 +1,6 @@
+using System;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -85,7 +87,7 @@ public class ShopManager : MonoBehaviour, IWindow
     private void BuyUnit(int id)
     {
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-        int finalPrice = (int)(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value));
+        int finalPrice = Mathf.RoundToInt(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value));
         if (goods.gold >= finalPrice)
         {
             goods.gold -= finalPrice;

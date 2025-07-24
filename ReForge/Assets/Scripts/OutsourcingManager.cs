@@ -140,7 +140,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         outsourcingDetail.gameObject.SetActive(true);
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(id);
         curId = id;
-        outsourcingDetail.GetChild(1).GetComponent<TMP_Text>().text = outsourcingData.dataName;
+        outsourcingDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = outsourcingData.dataName;
         outsourcingDetail.GetChild(3).GetComponent<TMP_Text>().text = outsourcingData.max + " 노력치";
         outsourcingDetail.GetChild(4).GetComponent<TMP_Text>().text = outsourcingData.reward + " 골드";
         StartCoroutine(WaitForAnimator(id));

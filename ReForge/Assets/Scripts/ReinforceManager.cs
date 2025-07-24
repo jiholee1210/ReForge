@@ -35,6 +35,18 @@ public class ReinforceManager : MonoBehaviour, IWindow
         Reset();
     }
 
+    private void OnEnable()
+    {
+        AutoManager.OnBuyUnit += HandleAutoBuy;
+        AutoManager.OnUpgradeUnit += (unit) => HandleAutoUpgrade(unit);
+    }
+
+    private void OnDisable()
+    {
+        AutoManager.OnBuyUnit -= HandleAutoBuy;
+        AutoManager.OnUpgradeUnit -= (unit) => HandleAutoUpgrade(unit);
+    }
+
     private void Setting()
     {
         unit = DataManger.Instance.unit;
@@ -54,6 +66,14 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
     private void SetUnitWindow()
     {
+        unit.units.Sort((a, b) =>
+        {
+            int cmp = a.id.CompareTo(b.id);
+            if (cmp != 0) return cmp;
+
+            return a.upgrade.CompareTo(b.upgrade);
+        });
+
         foreach (Transform transform in unitParent)
         {
             Destroy(transform.gameObject);
@@ -139,15 +159,33 @@ public class ReinforceManager : MonoBehaviour, IWindow
             unit.units.Remove(curUnit);
         }
 
-        unit.units.Sort((a, b) =>
-        {
-            int cmp = a.id.CompareTo(b.id);
-            if (cmp != 0) return cmp;
-
-            return a.upgrade.CompareTo(b.upgrade);
-        });
-
         Reset();
+    }
+
+    private void TryUpgrade(UnitInfo unitInfo)
+    {
+        int id = unitInfo.id;
+        float random = Random.Range(0, 100f);
+        Debug.Log(random);
+        UnitData unitData = DataManger.Instance.GetUnitData(id);
+        if (unitData.posibility >= random)
+        {
+            if (unitInfo.upgrade == 2)
+            {
+                // 승급
+                unitInfo.id += 1;
+                unitInfo.upgrade = 0;
+            }
+            else
+            {
+                // 강화
+                unitInfo.upgrade += 1;
+            }
+        }
+        else
+        {
+            unit.units.Remove(unitInfo);
+        }
     }
 
     private void ShowDetail(UnitInfo unitInfo)
@@ -227,5 +265,16 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         curUnit.place = 2;
         Reset();
+    }
+
+    private void HandleAutoBuy()
+    {
+        SetUnitWindow();
+    }
+
+    private void HandleAutoUpgrade(UnitInfo unitInfo)
+    {
+        TryUpgrade(unitInfo);
+        SetUnitWindow();
     }
 }

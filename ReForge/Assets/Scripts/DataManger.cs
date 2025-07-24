@@ -18,6 +18,7 @@ public class DataManger : MonoBehaviour
     public TempUpgrade tempUpgrade;
     public PermUpgrade permUpgrade;
     public ShopUnit shopUnit;
+    public Auto auto;
 
     private Task waitForUnitData;
     private Task waitForOutsourcingData;
@@ -32,6 +33,7 @@ public class DataManger : MonoBehaviour
         tempUpgrade = new();
         permUpgrade = new();
         shopUnit = new();
+        auto = new();
 
         waitForUnitData = LoadUnitData();
         waitForOutsourcingData = LoadOutsourcingData();
@@ -169,4 +171,13 @@ public class PermUpgrade
 {
     public List<int> canUpgrade = new();
     public List<int> complete = new();
+}
+
+public class Auto
+{
+    public int buyLevel;
+    public int upgradeLevel;
+    public int upgradeGrade;
+    public bool autoBuyOn = false;
+    public bool autoUpgradeOn = false;
 }
