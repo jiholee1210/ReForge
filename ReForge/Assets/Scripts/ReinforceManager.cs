@@ -68,10 +68,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         unit.units.Sort((a, b) =>
         {
-            int cmp = a.id.CompareTo(b.id);
+            int cmp = b.id.CompareTo(a.id);
             if (cmp != 0) return cmp;
 
-            return a.upgrade.CompareTo(b.upgrade);
+            return b.upgrade.CompareTo(a.upgrade);
         });
 
         foreach (Transform transform in unitParent)

@@ -22,7 +22,7 @@ public class AutoManager : MonoBehaviour, IWindow
     private PermUpgrade permUpgrade;
     private Auto auto;
 
-    private WaitForSeconds waitForOneSecond = new WaitForSeconds(1f);
+    private WaitForSeconds waitForOneSecond = new WaitForSeconds(0.2f);
 
     private Coroutine autoBuy;
     private Coroutine autoUpgrade;
