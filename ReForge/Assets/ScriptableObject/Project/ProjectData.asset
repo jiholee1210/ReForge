@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ProjectData
   m_EditorClassIdentifier: 
   id: 0
-  dataName: 0
+  dataName: "\uD300\uC6D0 \uBAA8\uC9D1"
   max: 1000
   reward: 1000

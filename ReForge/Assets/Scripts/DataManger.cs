@@ -19,9 +19,11 @@ public class DataManger : MonoBehaviour
     public PermUpgrade permUpgrade;
     public ShopUnit shopUnit;
     public Auto auto;
+    public Work work;
 
     private Task waitForUnitData;
     private Task waitForOutsourcingData;
+    private Task waitForProjectData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -34,10 +36,11 @@ public class DataManger : MonoBehaviour
         permUpgrade = new();
         shopUnit = new();
         auto = new();
+        work = new();
 
         waitForUnitData = LoadUnitData();
         waitForOutsourcingData = LoadOutsourcingData();
-        LoadProjectData();
+        waitForProjectData = LoadProjectData();
         LoadTempUpgradeData();
         //LoadPermUpgradeData();
 
@@ -71,7 +74,7 @@ public class DataManger : MonoBehaviour
         await handle.Task;
     }
 
-    private async void LoadProjectData()
+    private async Task LoadProjectData()
     {
         projectDataDict = new Dictionary<int, ProjectData>();
         var handle = Addressables.LoadAssetsAsync<ProjectData>("Project", project =>
@@ -112,6 +115,11 @@ public class DataManger : MonoBehaviour
     public Task WaitForLoadingOutsourcingData()
     {
         return waitForOutsourcingData;
+    }
+
+    public Task WaitForLoadingProjectData()
+    {
+        return waitForProjectData;
     }
 
     public UnitData GetUnitData(int id)
@@ -180,4 +188,10 @@ public class Auto
     public int upgradeGrade;
     public bool autoBuyOn = false;
     public bool autoUpgradeOn = false;
+}
+
+public class Work
+{
+    public int outsourcingID = -1;
+    public int projectID = -1;
 }

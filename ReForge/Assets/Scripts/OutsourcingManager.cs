@@ -16,21 +16,24 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     [SerializeField] private Button reinforceBtn;
 
+    [SerializeField] private GameObject notice;
+
     private Unit unit;
     private Goods goods;
     private TempUpgrade tempUpgrade;
     private PermUpgrade permUpgrade;
+    private Work work;
 
     private UnitInfo curUnit;
 
     private Coroutine coroutine;
-    private int curId;
     async void Start()
     {
         unit = DataManger.Instance.unit;
         goods = DataManger.Instance.goods;
         tempUpgrade = DataManger.Instance.tempUpgrade;
         permUpgrade = DataManger.Instance.permUpgrade;
+        work = DataManger.Instance.work;
 
         reinforceBtn.onClick.AddListener(() => PlaceReinforce());
 
@@ -43,7 +46,9 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         unitDetail.gameObject.SetActive(false);
         curUnit = null;
         SetUnitList();
-        StartCoroutine(WaitForAnimator(curId));
+        StartCoroutine(WaitForAnimator(work.outsourcingID));
+        if (work.outsourcingID != -1) notice.SetActive(false);
+        else notice.SetActive(true);
     }
 
     private void SetUnitList()
@@ -137,14 +142,18 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private void SetOutsourcing(int id)
     {
+        
+
         outsourcingDetail.gameObject.SetActive(true);
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(id);
-        curId = id;
+        work.outsourcingID = id;
         outsourcingDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = outsourcingData.dataName;
         outsourcingDetail.GetChild(3).GetComponent<TMP_Text>().text = outsourcingData.max + " 노력치";
         outsourcingDetail.GetChild(4).GetComponent<TMP_Text>().text = outsourcingData.reward + " 골드";
         StartCoroutine(WaitForAnimator(id));
         
+        if (work.outsourcingID != -1) notice.SetActive(false);
+        else notice.SetActive(true);
 
         // place 1에 위치한 유닛 데이터를 기반으로 외주 코루틴 시작
         if (coroutine != null)
@@ -210,6 +219,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
     private void PlaceReinforce()
     {
         curUnit.place = 0;
-        Reset();
+        SetUnitList();
+        unitDetail.gameObject.SetActive(false);
     }
 }

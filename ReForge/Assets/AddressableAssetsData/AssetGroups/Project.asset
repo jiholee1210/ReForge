@@ -21,26 +21,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - Project
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1011d4875f7af0b4d9b6f16dda688a02
-    m_Address: Assets/ScriptableObject/Project/ProjectData 6.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Project
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 368d97378183f0844ba2545aa59e144a
-    m_Address: Assets/ScriptableObject/Project/ProjectData 8.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Project
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3997ee5d581da694eb69754396027b88
     m_Address: Assets/ScriptableObject/Project/ProjectData.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Project
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 88863ea376a775f40a8bd7874802b4c6
-    m_Address: Assets/ScriptableObject/Project/ProjectData 9.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - Project
@@ -65,12 +47,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0cb2e49924b3f54d817942644a2c1b3
     m_Address: Assets/ScriptableObject/Project/ProjectData 5.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Project
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f62aac466809f9d4784023cf26fb8328
-    m_Address: Assets/ScriptableObject/Project/ProjectData 7.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - Project
