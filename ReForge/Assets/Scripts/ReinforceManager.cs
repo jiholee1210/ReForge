@@ -19,8 +19,6 @@ public class ReinforceManager : MonoBehaviour, IWindow
     [SerializeField] private Transform starParent;
     [SerializeField] private GameObject starPrefab;
 
-    [SerializeField] private GameObject notice;
-
     private Unit unit;
     private Goods goods;
     private TempUpgrade tempUpgrade;
@@ -69,10 +67,6 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
     private void SetUnitWindow()
     {
-        bool isEmpty = notice.activeSelf;
-
-        if (isEmpty) notice.SetActive(false);
-
         unit.units.Sort((a, b) =>
         {
             int cmp = b.id.CompareTo(a.id);
@@ -134,11 +128,6 @@ public class ReinforceManager : MonoBehaviour, IWindow
                     unitList.Add(newUnit);
                 }
             }
-        }
-
-        if (!unit.units.Any(unit => unit.place == 0))
-        {
-            notice.SetActive(true);
         }
     }
 

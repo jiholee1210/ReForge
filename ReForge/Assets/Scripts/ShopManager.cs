@@ -60,7 +60,7 @@ public class ShopManager : MonoBehaviour, IWindow
             unitItem.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
             unitItem.transform.GetChild(1).GetComponent<TMP_Text>().text = unitData.dataName;
             unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = (int)(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value)) + " 골드";
-            unitItem.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
+            unitItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
         }
     }
 
@@ -77,6 +77,7 @@ public class ShopManager : MonoBehaviour, IWindow
             TempUpgradeData tempUpgradeData = DataManger.Instance.GetTempUpgradeData(id);
 
             GameObject upgradeItem = Instantiate(upgradePrefab, upgradeParent);
+            upgradeItem.transform.GetChild(0).GetComponent<Image>().sprite = tempUpgradeData.sprite;
             upgradeItem.transform.GetChild(1).GetComponent<TMP_Text>().text = tempUpgradeData.dataName;
             upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = tempUpgradeData.price + " 골드";
             upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];

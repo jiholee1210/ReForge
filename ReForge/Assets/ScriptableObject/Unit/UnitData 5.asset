@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   dataName: "+5 \uC77C\uBC18\uC778"
-  power: 15
-  posibility: 70
-  price: 1
+  power: 320
+  posibility: -60
+  price: 40000
   nextUnit: 6
   sprite: {fileID: -3455839168180757821, guid: 3c056394bf1c21645bb0096e671db0e5, type: 3}

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   dataName: "\uC218\uB825 \uBC1C\uC804\uC18C"
-  max: 1000
-  reward: 1000
+  max: 3000
+  reward: 400

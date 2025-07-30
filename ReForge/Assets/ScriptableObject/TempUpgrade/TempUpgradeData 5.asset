@@ -17,3 +17,4 @@ MonoBehaviour:
   upgradeType: 6
   value: 0.1
   price: 100
+  sprite: {fileID: -9178273992976928048, guid: ccca6ed92950c21439282e93fdde997a, type: 3}

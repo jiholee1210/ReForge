@@ -11,6 +11,7 @@ public class SelectManager : MonoBehaviour
     void Start()
     {
         prevWindow = 0;
+        button[prevWindow].GetComponent<Image>().color = Color.green;
         for (int i = 0; i < button.Length; i++)
         {
             int index = i;
@@ -26,6 +27,8 @@ public class SelectManager : MonoBehaviour
 
     private void OpenWindow(int index)
     {
+        button[index].GetComponent<Image>().color = Color.green;
+        button[prevWindow].GetComponent<Image>().color = Color.white;
         selects[prevWindow].SetActive(false);
         selects[index].SetActive(true);
         managers[index].GetComponent<IWindow>().Reset();
