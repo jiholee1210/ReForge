@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef11f93c02c48ce459c74d3f56a5e204, type: 3}
+  m_Name: PermUpgradeData 1
+  m_EditorClassIdentifier: 
+  id: 1
+  dataName: "\uC791\uC5C5\uB7C9 \uC99D\uAC00"
+  desc: 1
+  upgradeType: 6
+  value: 0
+  price: 0

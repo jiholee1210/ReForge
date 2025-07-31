@@ -24,6 +24,8 @@ public class DataManger : MonoBehaviour
     private Task waitForUnitData;
     private Task waitForOutsourcingData;
     private Task waitForProjectData;
+    private Task waitForTempUpgradeData;
+    private Task waitForPermUpgradeData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -41,8 +43,8 @@ public class DataManger : MonoBehaviour
         waitForUnitData = LoadUnitData();
         waitForOutsourcingData = LoadOutsourcingData();
         waitForProjectData = LoadProjectData();
-        LoadTempUpgradeData();
-        //LoadPermUpgradeData();
+        waitForTempUpgradeData = LoadTempUpgradeData();
+        waitForPermUpgradeData = LoadPermUpgradeData();
 
         goods.gold += 100000;
     }
@@ -85,7 +87,7 @@ public class DataManger : MonoBehaviour
         await handle.Task;
     }
 
-    private async void LoadTempUpgradeData()
+    private async Task LoadTempUpgradeData()
     {
         tempUpgradeDataDict = new Dictionary<int, TempUpgradeData>();
         var handle = Addressables.LoadAssetsAsync<TempUpgradeData>("TempUpgrade", tempUpgrade =>
@@ -96,7 +98,7 @@ public class DataManger : MonoBehaviour
         await handle.Task;
     }
 
-    private async void LoadPermUpgradeData()
+    private async Task LoadPermUpgradeData()
     {
         permUpgradeDataDict = new Dictionary<int, PermUpgradeData>();
         var handle = Addressables.LoadAssetsAsync<PermUpgradeData>("PermUpgrade", permUpgrade =>
@@ -120,6 +122,16 @@ public class DataManger : MonoBehaviour
     public Task WaitForLoadingProjectData()
     {
         return waitForProjectData;
+    }
+
+    public Task WaitForLoadingTempUpgradeData()
+    {
+        return waitForTempUpgradeData;
+    }
+
+    public Task WaitForLoadingPermUpgradeData()
+    {
+        return waitForPermUpgradeData;
     }
 
     public UnitData GetUnitData(int id)
@@ -177,7 +189,7 @@ public class TempUpgrade
 
 public class PermUpgrade
 {
-    public List<int> canUpgrade = new();
+    public int upPoint = 10000;
     public List<int> complete = new();
 }
 

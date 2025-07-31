@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum UpgradeType
+public enum TempUpgradeType
 {
     None,
-    GoldGain,
-    UpPointGain,
     UnitPower,
     WorkSpeed,
     ReinforcePosibility,
-    PriceDiscount
+    GoldGain
 }
+
 [CreateAssetMenu(fileName = "TempUpgradeData", menuName = "TempUpgradeData", order = 0)]
 public class TempUpgradeData : ScriptableObject
 {
     public int id;
     public string dataName;
-    public UpgradeType upgradeType;
+    public TempUpgradeType upgradeType;
     public float value;
     public int price;
     public Sprite sprite;

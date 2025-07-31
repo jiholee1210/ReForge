@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: PermUpgrade
+  m_EditorClassIdentifier: 
+  m_GroupName: PermUpgrade
+  m_GUID: 258548726e740c24ab2c56bf37aa4a45
+  m_SerializeEntries:
+  - m_GUID: 1a2cc3eeb1b4c4d4b9c86ec035f9e547
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c7e97c05b8709f4dae19dd9709e097c
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8aede80ba4f1007488920a34ba7e51a9
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92ccc2ae856a4da448c47ec139a7ce72
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97dd62a7a717fc040bc75e0694f45d8a
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2f979cf1b9d48240ab55da6a06dce67
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec893c861f834b1409aa619761e1af72
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f295a8ae67cd4ef47b98c0a4c701a5fc
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe7a2cf8927b90541989ce3e241bc7ae
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff4d88667fb3a3d489f606a287ca0bdd
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1fff9770450d0454f9bed001f08e4aee, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 71527bebad48f9b43a23e733cb6be641, type: 2}
+    - {fileID: 11400000, guid: 2d25da5352e15ea4384efc796c9a99a3, type: 2}
