@@ -4,18 +4,25 @@ using UnityEngine.EventSystems;
 public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private PermUpgradeData permUpgradeData;
-    private Vector2 pos;
-    void Start()
+    private bool isPointerOver = false;
+
+    void Update()
     {
-        pos = GetComponent<RectTransform>().anchoredPosition;
+        if (isPointerOver)
+        {
+            TooltipManager.Instance.ResetPos(transform.position);
+        }
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        TooltipManager.Instance.ShowTooltip(permUpgradeData, pos);
+        isPointerOver = true;
+        TooltipManager.Instance.ShowTooltip(permUpgradeData, transform.position);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isPointerOver = false;
         TooltipManager.Instance.HideTooltip();
     }
 

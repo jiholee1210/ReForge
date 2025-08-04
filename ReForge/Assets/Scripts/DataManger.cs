@@ -206,4 +206,8 @@ public class Work
 {
     public int outsourcingID = -1;
     public int projectID = -1;
+    public int curOut;
+    public int curProject;
+    public int outsourcingMax = 15;
+    public List<int> completeProject = new();
 }

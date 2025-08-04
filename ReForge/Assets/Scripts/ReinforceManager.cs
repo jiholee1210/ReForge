@@ -23,6 +23,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
     private Goods goods;
     private TempUpgrade tempUpgrade;
     private PermUpgrade permUpgrade;
+    private Work work;
 
     private UnitInfo curUnit;
     async void Start()
@@ -54,6 +55,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
         goods = DataManger.Instance.goods;
         tempUpgrade = DataManger.Instance.tempUpgrade;
         permUpgrade = DataManger.Instance.permUpgrade;
+        work = DataManger.Instance.work;
     }
 
     public void Reset()
@@ -258,12 +260,16 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
     private void PlaceOutsourcing()
     {
+        if (work.curOut >= work.outsourcingMax) return;
+        work.curOut++;
         curUnit.place = 1;
         Reset();
     }
 
     private void PlaceProject()
     {
+        if (work.curProject >= 4) return;
+        work.curProject++;
         curUnit.place = 2;
         Reset();
     }

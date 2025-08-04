@@ -8,6 +8,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 {
     [SerializeField] private Transform unitDetail;
     [SerializeField] private Transform outsourcingDetail;
+    [SerializeField] private TMP_Text count;
 
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private Transform unitParent;
@@ -58,6 +59,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             Destroy(transform.gameObject);
         }
 
+        SetCount();
         List<GameObject> unitList = new();
         foreach (UnitInfo unitInfo in unit.units)
         {
@@ -214,6 +216,11 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             goods.gold += (int)(outsourcingData.reward * (1 + tempUpgrade.upgrade[0] * DataManger.Instance.GetTempUpgradeData(0).value));
             UIManager.Instance.SetGoldText();
         }
+    }
+
+    private void SetCount()
+    {
+        count.text = work.curOut + "/" + work.outsourcingMax;
     }
 
     private void PlaceReinforce()

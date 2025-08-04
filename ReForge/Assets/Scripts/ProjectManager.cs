@@ -8,6 +8,7 @@ public class ProjectManager : MonoBehaviour, IWindow
 {
     [SerializeField] private Transform unitDetail;
     [SerializeField] private Transform projectDetail;
+    [SerializeField] private TMP_Text count;
 
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private Transform unitParent;
@@ -58,10 +59,11 @@ public class ProjectManager : MonoBehaviour, IWindow
             Destroy(transform.gameObject);
         }
 
+        SetCount();
         List<GameObject> unitList = new();
         foreach (UnitInfo unitInfo in unit.units)
         {
-            if (unitInfo.place != 1) continue;
+            if (unitInfo.place != 2) continue;
             int id = unitInfo.id;
             int upgrade = unitInfo.upgrade;
             UnitData unitData = DataManger.Instance.GetUnitData(id);
@@ -124,6 +126,15 @@ public class ProjectManager : MonoBehaviour, IWindow
             GameObject item = Instantiate(projectPrefab, projectParent);
             item.transform.GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
             item.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => SetProject(id));
+
+            Debug.Log(string.Join(", ", work.completeProject));
+            if (work.completeProject.Contains(id))
+            {
+                Debug.Log("완료한 프로젝트 : " + id);
+                item.transform.GetComponent<Image>().color = Color.gray;
+                item.transform.GetChild(1).gameObject.SetActive(false);
+                item.transform.GetChild(2).gameObject.SetActive(true);
+            }
         }
     }
 
@@ -147,7 +158,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         work.projectID = id;
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
         projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
-        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = projectData.reward + " 골드";
+        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = projectData.rewardGold + " 골드";
         StartCoroutine(WaitForAnimator(id));
         
         if (work.projectID != -1) notice.SetActive(false);
@@ -179,39 +190,47 @@ public class ProjectManager : MonoBehaviour, IWindow
         Slider slider = projectDetail.GetChild(2).GetComponent<Slider>();
         TMP_Text rateText = projectDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>();
 
-        while (true)
+        float power;
+        // dps 기준으로  slider value 값 측정
+        ProjectData projectData = DataManger.Instance.GetProjectData(id);
+        float max = projectData.max;
+        float cur = projectData.max;
+        slider.maxValue = max;
+        slider.value = max;
+        rateText.text = "100.00%";
+        while (cur > 0)
         {
-            float power;
-            // dps 기준으로  slider value 값 측정
-            ProjectData projectData = DataManger.Instance.GetProjectData(id);
-            float max = projectData.max;
-            float cur = projectData.max;
-            slider.maxValue = max;
-            slider.value = max;
-            rateText.text = "100.00%";
-            while (cur > 0)
+            float time = 1f * (1 - tempUpgrade.upgrade[3] * DataManger.Instance.GetTempUpgradeData(3).value);
+            yield return new WaitForSeconds(time);
+            power = 0;
+            foreach (UnitInfo unitInfo in unit.units)
             {
-                float time = 1f * (1 - tempUpgrade.upgrade[3] * DataManger.Instance.GetTempUpgradeData(3).value);
-                yield return new WaitForSeconds(time);
-                power = 0;
-                foreach (UnitInfo unitInfo in unit.units)
-                {
-                    if (unitInfo.place != 1) continue;
-                    UnitData unitData = DataManger.Instance.GetUnitData(unitInfo.id);
-                    Debug.Log(unitData.power);
-                    power += unitData.power * (1 + tempUpgrade.upgrade[2] * DataManger.Instance.GetTempUpgradeData(2).value);
-                }
-
-                cur -= power;
-                cur = Mathf.Max(0, cur);
-                float rate = cur / max * 100;
-                Debug.Log(rate + " " + power);
-                slider.value = cur;
-                rateText.text = rate.ToString("F2") + "%";
+                if (unitInfo.place != 2) continue;
+                UnitData unitData = DataManger.Instance.GetUnitData(unitInfo.id);
+                Debug.Log(unitData.power);
+                power += unitData.power * (1 + tempUpgrade.upgrade[2] * DataManger.Instance.GetTempUpgradeData(2).value);
             }
-            goods.gold += (int)(projectData.reward * (1 + tempUpgrade.upgrade[0] * DataManger.Instance.GetTempUpgradeData(0).value));
-            UIManager.Instance.SetGoldText();
+
+            cur -= power;
+            cur = Mathf.Max(0, cur);
+            float rate = cur / max * 100;
+            Debug.Log(rate + " " + power);
+            slider.value = cur;
+            rateText.text = rate.ToString("F2") + "%";
         }
+        goods.gold += (int)(projectData.rewardGold * (1 + tempUpgrade.upgrade[0] * DataManger.Instance.GetTempUpgradeData(0).value));
+        work.outsourcingMax += projectData.unitMax;
+        work.completeProject.Add(projectData.id);
+        projectDetail.gameObject.SetActive(false);
+        notice.SetActive(true);
+
+        UIManager.Instance.SetGoldText();
+        SetProjectList();
+    }
+
+    private void SetCount()
+    {
+        count.text = work.curProject + "/4";
     }
 
     private void PlaceReinforce()
