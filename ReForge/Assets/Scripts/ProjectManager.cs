@@ -127,7 +127,6 @@ public class ProjectManager : MonoBehaviour, IWindow
             item.transform.GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
             item.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => SetProject(id));
 
-            Debug.Log(string.Join(", ", work.completeProject));
             if (work.completeProject.Contains(id))
             {
                 Debug.Log("완료한 프로젝트 : " + id);

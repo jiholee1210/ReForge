@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -27,11 +29,41 @@ public class DataManger : MonoBehaviour
     private Task waitForTempUpgradeData;
     private Task waitForPermUpgradeData;
 
+    private string unitPath;
+    private string goodsPath;
+    private string tempUpgradePath;
+    private string permUpgradePath;
+    private string shopUnitPath;
+    private string autoPath;
+    private string workPath;
+
+    private Dictionary<Type, (object Instance, string path)> saveDict = new();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         Instance = this;
+        waitForUnitData = LoadUnitData();
+        waitForOutsourcingData = LoadOutsourcingData();
+        waitForProjectData = LoadProjectData();
+        waitForTempUpgradeData = LoadTempUpgradeData();
+        waitForPermUpgradeData = LoadPermUpgradeData();
 
+        DataSetting();
+    }
+
+    private void Register() {
+        saveDict[typeof(Unit)] = (unit, unitPath);
+        saveDict[typeof(Goods)] = (goods, goodsPath);
+        saveDict[typeof(TempUpgrade)] = (tempUpgrade, tempUpgradePath);
+        saveDict[typeof(PermUpgrade)] = (permUpgrade, permUpgradePath);
+        saveDict[typeof(ShopUnit)] = (shopUnit, shopUnitPath);
+        saveDict[typeof(Auto)] = (auto, autoPath);
+        saveDict[typeof(Work)] = (work, workPath);
+    }
+
+    private void DataSetting()
+    {
         unit = new();
         goods = new();
         tempUpgrade = new();
@@ -40,18 +72,47 @@ public class DataManger : MonoBehaviour
         auto = new();
         work = new();
 
-        waitForUnitData = LoadUnitData();
-        waitForOutsourcingData = LoadOutsourcingData();
-        waitForProjectData = LoadProjectData();
-        waitForTempUpgradeData = LoadTempUpgradeData();
-        waitForPermUpgradeData = LoadPermUpgradeData();
+        unitPath = Path.Combine(Application.persistentDataPath, "unit.json");
+        goodsPath = Path.Combine(Application.persistentDataPath, "goods.json");
+        tempUpgradePath = Path.Combine(Application.persistentDataPath, "tempUpgrade.json");
+        permUpgradePath = Path.Combine(Application.persistentDataPath, "permUpgrade.json");
+        shopUnitPath = Path.Combine(Application.persistentDataPath, "shopUnit.json");
+        autoPath = Path.Combine(Application.persistentDataPath, "auto.json");
+        workPath = Path.Combine(Application.persistentDataPath, "work.json");
 
-        goods.gold += 100000;
+        Register();
+
+        foreach (var item in saveDict)
+        {
+            if (!File.Exists(item.Value.path))
+            {
+                string json = JsonUtility.ToJson(item.Value.Instance, true);
+                File.WriteAllText(item.Value.path, json);
+            }
+            else
+            {
+                string json = File.ReadAllText(item.Value.path);
+                JsonUtility.FromJsonOverwrite(json, item.Value.Instance);
+            }
+        }
     }
 
-    void Start()
+    public void SaveAll()
     {
+        foreach (var item in saveDict)
+        {
+            string json = JsonUtility.ToJson(item.Value.Instance, true);
+            File.WriteAllText(item.Value.path, json);
+        }
+    }
 
+    public void LoadAll()
+    {
+        foreach (var item in saveDict)
+        {
+            string json = File.ReadAllText(item.Value.path);
+            JsonUtility.FromJsonOverwrite(json, item.Value.Instance);
+        }
     }
 
     private async Task LoadUnitData()
@@ -165,6 +226,7 @@ public class Unit
     public List<UnitInfo> units = new();
 }
 
+[Serializable]
 public class UnitInfo
 {
     public int id;
@@ -174,7 +236,7 @@ public class UnitInfo
 
 public class Goods
 {
-    public int gold;
+    public int gold = 100000;
 }
 
 public class ShopUnit

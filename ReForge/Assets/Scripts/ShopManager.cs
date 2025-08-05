@@ -119,6 +119,7 @@ public class ShopManager : MonoBehaviour, IWindow
         }
 
         ResetUnit();
+        DataManger.Instance.SaveAll();
     }
 
     private void BuyUpgrade(int id)
