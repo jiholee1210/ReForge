@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: TempUpgrade
   m_GUID: 5de7240aac29d2f45bc093b363d6fd2f
   m_SerializeEntries:
-  - m_GUID: 020c3de61861fe545be445d90574fc46
-    m_Address: Assets/ScriptableObject/TempUpgrade/TempUpgradeData 5.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - TempUpgrade
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34d1c1d6aad023042908d24e6950a5d0
     m_Address: Assets/ScriptableObject/TempUpgrade/TempUpgradeData 4.asset
     m_ReadOnly: 0
@@ -35,12 +29,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aff58990edd55e34b82d58cd783cc5e4
     m_Address: Assets/ScriptableObject/TempUpgrade/TempUpgradeData.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - TempUpgrade
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c6b834a8ee33ac74f930470c4f8f8711
-    m_Address: Assets/ScriptableObject/TempUpgrade/TempUpgradeData 1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - TempUpgrade

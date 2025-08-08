@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class AutoManager : MonoBehaviour, IWindow
     private TempUpgrade tempUpgrade;
     private PermUpgrade permUpgrade;
     private Auto auto;
+    private ShopUnit shopUnit;
 
     private WaitForSeconds waitForOneSecond = new WaitForSeconds(0.2f);
 
@@ -33,14 +35,19 @@ public class AutoManager : MonoBehaviour, IWindow
         tempUpgrade = DataManger.Instance.tempUpgrade;
         permUpgrade = DataManger.Instance.permUpgrade;
         auto = DataManger.Instance.auto;
+        shopUnit = DataManger.Instance.shopUnit;
 
         DefaultSetting();
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnEnable()
     {
+        DataManger.OnTryReset += TryReset;
+    }
 
+    void OnDisable()
+    {
+        DataManger.OnTryReset -= TryReset;
     }
 
     private void DefaultSetting()
@@ -58,6 +65,19 @@ public class AutoManager : MonoBehaviour, IWindow
     public void Reset()
     {
         // auto 수치 기반으로 드롭다운 value 값 초기화
+        SetItem();
+    }
+
+    private void SetItem()
+    {
+        buyLevel.ClearOptions();
+
+        List<string> options = new();
+        for (int i = 0; i < shopUnit.canBuy.Count; i++) {
+            options.Add($"+{i} 유닛");
+        }
+
+        buyLevel.AddOptions(options);
     }
 
     public void SwitchAutoBuy(bool value)
@@ -123,7 +143,7 @@ public class AutoManager : MonoBehaviour, IWindow
             }
             autoUpgrade = StartCoroutine(AutoUpgradeUnit());
         }
-        
+
     }
 
     public void SetAutoUpgradeGrade(int value)
@@ -144,7 +164,7 @@ public class AutoManager : MonoBehaviour, IWindow
     {
         // 매 초 목표 유닛 자동 구매
         int unitId = auto.buyLevel;
-        
+
         UnitData unitData = DataManger.Instance.GetUnitData(unitId);
         while (true)
         {
@@ -158,7 +178,7 @@ public class AutoManager : MonoBehaviour, IWindow
             // 실시간 유닛 목록 초기화
             unit.units.Add(unitInfo);
             Debug.Log("유닛 자동 구매 : " + unitInfo.id + " " + auto.buyLevel);
-            goods.gold -= Mathf.RoundToInt(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value));
+            goods.gold -= unitData.price;
             OnBuyUnit?.Invoke();
             UIManager.Instance.SetGoldText();
             yield return waitForOneSecond;
@@ -177,8 +197,20 @@ public class AutoManager : MonoBehaviour, IWindow
                 {
                     OnUpgradeUnit?.Invoke(unit.units[i]);
                 }
-                }
+            }
             yield return waitForOneSecond;
         }
+    }
+
+    private void TryReset()
+    {
+        StopAllCoroutines();
+        autoBuy = null;
+        autoUpgrade = null;
+
+        autoBuyCheck.isOn = false;
+        autoUpgradeCheck.isOn = false;
+
+        buyLevel.ClearOptions();
     }
 }

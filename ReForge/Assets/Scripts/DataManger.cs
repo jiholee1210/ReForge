@@ -39,6 +39,8 @@ public class DataManger : MonoBehaviour
 
     private Dictionary<Type, (object Instance, string path)> saveDict = new();
 
+    public static event Action OnTryReset;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -52,7 +54,8 @@ public class DataManger : MonoBehaviour
         DataSetting();
     }
 
-    private void Register() {
+    private void Register()
+    {
         saveDict[typeof(Unit)] = (unit, unitPath);
         saveDict[typeof(Goods)] = (goods, goodsPath);
         saveDict[typeof(TempUpgrade)] = (tempUpgrade, tempUpgradePath);
@@ -219,11 +222,30 @@ public class DataManger : MonoBehaviour
     {
         return permUpgradeDataDict[id];
     }
+
+    public void ResetData()
+    {
+        unit.Reset();
+        goods.Reset();
+        shopUnit.Reset();
+        tempUpgrade.Reset();
+        auto.Reset();
+        work.Reset();
+        SaveAll();
+
+        UIManager.Instance.SetGoldText();
+        OnTryReset?.Invoke();
+    }
 }
 
 public class Unit
 {
     public List<UnitInfo> units = new();
+
+    public void Reset()
+    {
+        units = new();
+    }
 }
 
 [Serializable]
@@ -236,23 +258,38 @@ public class UnitInfo
 
 public class Goods
 {
-    public int gold = 100000;
+    public int gold = 1000;
+
+    public void Reset()
+    {
+        gold = 1000;
+    }
 }
 
 public class ShopUnit
 {
     public List<int> canBuy = new();
+
+    public void Reset()
+    {
+        canBuy = new();
+    }
 }
 
 public class TempUpgrade
 {
-    public int[] upgrade = new int[6];
+    public int[] upgrade = new int[4];
+    public void Reset()
+    {
+        upgrade = new int[4];
+    }
 }
 
 public class PermUpgrade
 {
     public int upPoint = 10000;
     public List<int> complete = new();
+    public int open;
 }
 
 public class Auto
@@ -262,6 +299,15 @@ public class Auto
     public int upgradeGrade;
     public bool autoBuyOn = false;
     public bool autoUpgradeOn = false;
+
+    public void Reset()
+    {
+        buyLevel = 0;
+        upgradeLevel = 0;
+        upgradeGrade = 0;
+        autoBuyOn = false;
+        autoUpgradeOn = false;
+    }
 }
 
 public class Work
@@ -272,4 +318,14 @@ public class Work
     public int curProject;
     public int outsourcingMax = 15;
     public List<int> completeProject = new();
+
+    public void Reset()
+    {
+        outsourcingID = -1;
+        projectID = -1;
+        curOut = 0;
+        curProject = 0;
+        outsourcingMax = 15;
+        completeProject = new();
+    }
 }

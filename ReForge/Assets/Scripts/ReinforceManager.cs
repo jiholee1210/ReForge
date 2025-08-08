@@ -19,6 +19,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
     [SerializeField] private Transform starParent;
     [SerializeField] private GameObject starPrefab;
 
+    [SerializeField] private Transform reset;
+
     private Unit unit;
     private Goods goods;
     private TempUpgrade tempUpgrade;
@@ -26,6 +28,9 @@ public class ReinforceManager : MonoBehaviour, IWindow
     private Work work;
 
     private UnitInfo curUnit;
+
+    private int point;
+    private bool resetOpen;
     async void Start()
     {
         Setting();
@@ -35,6 +40,22 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
         await DataManger.Instance.WaitForLoadingUnitData();
         Reset();
+        reset.GetChild(3).GetComponent<Button>().onClick.AddListener(() => TryReset());
+    }
+
+    void Update()
+    {
+        point = goods.gold / 10000;
+        if (point > 0 && !resetOpen)
+        {
+            reset.gameObject.SetActive(true);
+            resetOpen = true;
+        }
+
+        if (resetOpen)
+        {
+            reset.GetChild(2).GetComponent<TMP_Text>().text = point.ToString();
+        }
     }
 
     private void OnEnable()
@@ -283,5 +304,14 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         TryUpgrade(unitInfo);
         SetUnitWindow();
+    }
+
+    public void TryReset()
+    {
+        DataManger.Instance.ResetData();
+        permUpgrade.upPoint += point;
+        Reset();
+        reset.gameObject.SetActive(false);
+        resetOpen = false;
     }
 }

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4d2aa1d27aa60408abc6c9d6be46f4, type: 3}
   m_Name: TempUpgradeData 2
   m_EditorClassIdentifier: 
-  id: 2
+  id: 1
   dataName: "\uC720\uB2DB \uD30C\uC6CC \uC99D\uAC00"
-  upgradeType: 3
+  upgradeType: 1
   value: 0.1
   price: 100
   sprite: {fileID: -6346165763731716011, guid: 41fef6488fe72524f9a86226441254e0, type: 3}

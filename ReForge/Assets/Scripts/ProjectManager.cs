@@ -42,6 +42,16 @@ public class ProjectManager : MonoBehaviour, IWindow
         SetProjectList();
     }
 
+    void OnEnable()
+    {
+        DataManger.OnTryReset += TryReset;
+    }
+
+    void OnDisable()
+    {
+        DataManger.OnTryReset -= TryReset;
+    }
+
     public void Reset()
     {
         unitDetail.gameObject.SetActive(false);
@@ -159,7 +169,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
         projectDetail.GetChild(4).GetComponent<TMP_Text>().text = projectData.rewardGold + " 골드";
         StartCoroutine(WaitForAnimator(id));
-        
+
         if (work.projectID != -1) notice.SetActive(false);
         else notice.SetActive(true);
 
@@ -237,5 +247,12 @@ public class ProjectManager : MonoBehaviour, IWindow
         curUnit.place = 0;
         SetUnitList();
         unitDetail.gameObject.SetActive(false);
+    }
+
+    private void TryReset()
+    {
+        StopAllCoroutines();
+        coroutine = null;
+        projectDetail.gameObject.SetActive(false);
     }
 }

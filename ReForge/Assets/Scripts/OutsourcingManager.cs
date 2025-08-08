@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,16 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
         await DataManger.Instance.WaitForLoadingOutsourcingData();
         SetOutsourcingList();
+    }
+
+    void OnEnable()
+    {
+        DataManger.OnTryReset += TryReset;
+    }
+
+    void OnDisable()
+    {
+        DataManger.OnTryReset -= TryReset;
     }
 
     public void Reset()
@@ -144,7 +155,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private void SetOutsourcing(int id)
     {
-        
+
 
         outsourcingDetail.gameObject.SetActive(true);
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(id);
@@ -153,7 +164,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         outsourcingDetail.GetChild(3).GetComponent<TMP_Text>().text = outsourcingData.max + " 노력치";
         outsourcingDetail.GetChild(4).GetComponent<TMP_Text>().text = outsourcingData.reward + " 골드";
         StartCoroutine(WaitForAnimator(id));
-        
+
         if (work.outsourcingID != -1) notice.SetActive(false);
         else notice.SetActive(true);
 
@@ -193,9 +204,19 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             slider.maxValue = max;
             slider.value = max;
             rateText.text = "100.00%";
+
+            var workSpeed = DataManger.Instance.tempUpgradeDataDict
+                .FirstOrDefault(pair => pair.Value.upgradeType == TempUpgradeType.WorkSpeed);
+
+            var unitPower = DataManger.Instance.tempUpgradeDataDict
+                .FirstOrDefault(pair => pair.Value.upgradeType == TempUpgradeType.UnitPower);
+
+            var goldGain = DataManger.Instance.tempUpgradeDataDict
+                .FirstOrDefault(pair => pair.Value.upgradeType == TempUpgradeType.GoldGain);
             while (cur > 0)
             {
-                float time = 1f * (1 - tempUpgrade.upgrade[3] * DataManger.Instance.GetTempUpgradeData(3).value);
+
+                float time = 1f * (1 - tempUpgrade.upgrade[workSpeed.Key] * workSpeed.Value.value);
                 yield return new WaitForSeconds(time);
                 power = 0;
                 foreach (UnitInfo unitInfo in unit.units)
@@ -203,7 +224,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
                     if (unitInfo.place != 1) continue;
                     UnitData unitData = DataManger.Instance.GetUnitData(unitInfo.id);
                     Debug.Log(unitData.power);
-                    power += unitData.power * (1 + tempUpgrade.upgrade[2] * DataManger.Instance.GetTempUpgradeData(2).value);
+                    power += unitData.power * (1 + tempUpgrade.upgrade[unitPower.Key] * unitPower.Value.value);
                 }
 
                 cur -= power;
@@ -213,7 +234,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
                 slider.value = cur;
                 rateText.text = rate.ToString("F2") + "%";
             }
-            goods.gold += (int)(outsourcingData.reward * (1 + tempUpgrade.upgrade[0] * DataManger.Instance.GetTempUpgradeData(0).value));
+            goods.gold += (int)(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGain.Key] * goldGain.Value.value));
             UIManager.Instance.SetGoldText();
         }
     }
@@ -228,5 +249,13 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         curUnit.place = 0;
         SetUnitList();
         unitDetail.gameObject.SetActive(false);
+    }
+
+    private void TryReset()
+    {
+        StopAllCoroutines();
+        coroutine = null;
+
+        outsourcingDetail.gameObject.SetActive(false);
     }
 }

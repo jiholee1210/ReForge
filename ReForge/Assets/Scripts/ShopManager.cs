@@ -59,7 +59,7 @@ public class ShopManager : MonoBehaviour, IWindow
             unitItem.transform.GetChild(0).GetComponent<Image>().sprite = unitData.sprite;
             unitItem.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
             unitItem.transform.GetChild(1).GetComponent<TMP_Text>().text = unitData.dataName;
-            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = (int)(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value)) + " 골드";
+            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = unitData.price + " 골드";
             unitItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
         }
     }
@@ -88,7 +88,7 @@ public class ShopManager : MonoBehaviour, IWindow
     private void BuyUnit(int id)
     {
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-        int finalPrice = Mathf.RoundToInt(unitData.price * (1 - tempUpgrade.upgrade[5] * DataManger.Instance.GetTempUpgradeData(5).value));
+        int finalPrice = unitData.price;
         if (goods.gold >= finalPrice)
         {
             goods.gold -= finalPrice;

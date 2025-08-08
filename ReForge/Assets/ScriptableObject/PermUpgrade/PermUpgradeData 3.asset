@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef11f93c02c48ce459c74d3f56a5e204, type: 3}
   m_Name: PermUpgradeData 3
   m_EditorClassIdentifier: 
-  id: 3
+  id: 4
   dataName: "\uC778\uB825 \uAC00\uACA9 \uD560\uC778"
   desc: 3
   upgradeType: 2
   value: 0
-  price: 0
+  price: 1

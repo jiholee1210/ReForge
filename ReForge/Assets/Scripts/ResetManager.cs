@@ -6,13 +6,12 @@ public class ResetManager : MonoBehaviour, IWindow
 {
     [SerializeField] private Button[] up;
     [SerializeField] private TMP_Text point;
+    [SerializeField] private GameObject[] windows;
 
     private PermUpgrade permUpgrade;
     async void Start()
     {
         permUpgrade = DataManger.Instance.permUpgrade;
-        SetPointText();
-
         await DataManger.Instance.WaitForLoadingPermUpgradeData();
 
         for (int i = 0; i < up.Length; i++)
@@ -21,17 +20,21 @@ public class ResetManager : MonoBehaviour, IWindow
             up[index].onClick.AddListener(() => BuyUpgrade(index));
             up[index].GetComponent<Tooltip>().SetUpgrade(index);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        for (int i = 0; i < permUpgrade.open; i++)
+        {
+            windows[i].SetActive(false);
+        }
+        foreach (int i in permUpgrade.complete)
+        {
+            up[i].enabled = true;
+            up[i].GetComponent<Image>().color = Color.gray;
+        }
     }
 
     public void Reset()
     {
-
+        SetPointText();
     }
 
     private void BuyUpgrade(int index)
@@ -44,6 +47,8 @@ public class ResetManager : MonoBehaviour, IWindow
             up[index].enabled = false;
             up[index].GetComponent<Image>().color = Color.gray;
             SetPointText();
+            SetWindow();
+            DataManger.Instance.SaveAll();
         }
     }
 
@@ -52,5 +57,31 @@ public class ResetManager : MonoBehaviour, IWindow
         point.text = permUpgrade.upPoint + " 포인트";
     }
 
-    // 버튼 더블 클릭으로 업그레이드 구매 (UP포인트 비교)
+    private void SetWindow()
+    {
+        Debug.Log("완료 업그레이드 수 : " + permUpgrade.complete.Count);
+        switch (permUpgrade.complete.Count)
+        {
+            case 1:
+                windows[0].SetActive(false);
+                permUpgrade.open = 1;
+                break;
+            case 4:
+                windows[1].SetActive(false);
+                permUpgrade.open = 2;
+                break;
+            case 7:
+                windows[2].SetActive(false);
+                permUpgrade.open = 3;
+                break;
+            case 8:
+                windows[3].SetActive(false);
+                permUpgrade.open = 4;
+                break;
+            case 10:
+                windows[4].SetActive(false);
+                permUpgrade.open = 5;
+                break;
+        }
+    }
 }
