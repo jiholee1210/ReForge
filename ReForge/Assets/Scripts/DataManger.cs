@@ -1,13 +1,18 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 public class DataManger : MonoBehaviour
 {
     public static DataManger Instance { get; private set; }
+
+    [SerializeField] private Button save;
 
     public Dictionary<int, UnitData> unitDataDict;
     public Dictionary<int, OutsourcingData> outsourcingDataDict;
@@ -39,8 +44,11 @@ public class DataManger : MonoBehaviour
 
     private Dictionary<Type, (object Instance, string path)> saveDict = new();
 
+    private KeyValuePair<int, PermUpgradeData> baseGold;
+
     public static event Action OnTryReset;
 
+    private float curTime;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -50,9 +58,24 @@ public class DataManger : MonoBehaviour
         waitForProjectData = LoadProjectData();
         waitForTempUpgradeData = LoadTempUpgradeData();
         waitForPermUpgradeData = LoadPermUpgradeData();
-
+        
         DataSetting();
     }
+
+    void Start()
+    {
+        StartCoroutine(AutoSave());
+        save.onClick.AddListener(() => SaveAll());
+    }
+
+    private IEnumerator AutoSave()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(180f);
+            SaveAll();
+        }
+    }   
 
     private void Register()
     {
@@ -169,7 +192,7 @@ public class DataManger : MonoBehaviour
         {
             permUpgradeDataDict[permUpgrade.id] = permUpgrade;
         });
-
+        
         await handle.Task;
     }
 
@@ -225,8 +248,11 @@ public class DataManger : MonoBehaviour
 
     public void ResetData()
     {
+        baseGold = permUpgradeDataDict
+                .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.BaseGold);
+
         unit.Reset();
-        goods.Reset();
+        goods.Reset(permUpgrade.complete.Contains(baseGold.Key) ? Mathf.RoundToInt(baseGold.Value.value) : 0);
         shopUnit.Reset();
         tempUpgrade.Reset();
         auto.Reset();
@@ -260,9 +286,9 @@ public class Goods
 {
     public int gold = 1000;
 
-    public void Reset()
+    public void Reset(int baseGold)
     {
-        gold = 1000;
+        gold = 1000 + baseGold;
     }
 }
 
@@ -270,9 +296,17 @@ public class ShopUnit
 {
     public List<int> canBuy = new();
 
+    public ShopUnit()
+    {
+        canBuy.Add(0);
+    }
+
     public void Reset()
     {
-        canBuy = new();
+        canBuy = new()
+        {
+            0
+        };
     }
 }
 
@@ -287,7 +321,7 @@ public class TempUpgrade
 
 public class PermUpgrade
 {
-    public int upPoint = 10000;
+    public int upPoint;
     public List<int> complete = new();
     public int open;
 }

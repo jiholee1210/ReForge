@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,13 +14,18 @@ public class ShopManager : MonoBehaviour, IWindow
     [SerializeField] private Transform unitParent;
     [SerializeField] private Transform upgradeParent;
 
-    public Unit unit;
-    public Goods goods;
-    public TempUpgrade tempUpgrade;
-    public PermUpgrade permUpgrade;
-    public ShopUnit shopUnit;
+    private Unit unit;
+    private Goods goods;
+    private TempUpgrade tempUpgrade;
+    private PermUpgrade permUpgrade;
+    private ShopUnit shopUnit;
 
-    void Start()
+    private KeyValuePair<int, PermUpgradeData> unitDiscount;
+    private KeyValuePair<int, PermUpgradeData> upDiscount;
+    private KeyValuePair<int, PermUpgradeData> unitPowerPerm;
+    private KeyValuePair<int, TempUpgradeData> unitPowerTemp;
+
+    async void Start()
     {
         unit = DataManger.Instance.unit;
         goods = DataManger.Instance.goods;
@@ -25,16 +33,20 @@ public class ShopManager : MonoBehaviour, IWindow
         permUpgrade = DataManger.Instance.permUpgrade;
         shopUnit = DataManger.Instance.shopUnit;
 
-        InitSetting();
-    }
+        await DataManger.Instance.WaitForLoadingPermUpgradeData();
+        await DataManger.Instance.WaitForLoadingTempUpgradeData();
 
-    private void InitSetting()
-    {
-        if (shopUnit.canBuy.Count == 0)
-        {
-            shopUnit.canBuy.Add(0);
-            Debug.Log("초기 리스트 추가");
-        }
+        unitDiscount = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitDiscount);
+
+        upDiscount = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UpgradeDiscount);
+
+        unitPowerPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
+
+        unitPowerTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
     }
 
     public void Reset()
@@ -59,8 +71,9 @@ public class ShopManager : MonoBehaviour, IWindow
             unitItem.transform.GetChild(0).GetComponent<Image>().sprite = unitData.sprite;
             unitItem.transform.GetChild(0).GetComponent<Image>().SetNativeSize();
             unitItem.transform.GetChild(1).GetComponent<TMP_Text>().text = unitData.dataName;
-            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = unitData.price + " 골드";
-            unitItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
+            unitItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(unitData.power * (1 + (tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)) * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0))) + " 작업량";
+            unitItem.transform.GetChild(3).GetComponent<TMP_Text>().text = Mathf.RoundToInt(unitData.price * (1 - (permUpgrade.complete.Contains(unitDiscount.Key) ? unitDiscount.Value.value : 0))) + " 골드";
+            unitItem.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(() => BuyUnit(id));
         }
     }
 
@@ -79,16 +92,24 @@ public class ShopManager : MonoBehaviour, IWindow
             GameObject upgradeItem = Instantiate(upgradePrefab, upgradeParent);
             upgradeItem.transform.GetChild(0).GetComponent<Image>().sprite = tempUpgradeData.sprite;
             upgradeItem.transform.GetChild(1).GetComponent<TMP_Text>().text = tempUpgradeData.dataName;
-            upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = tempUpgradeData.price + " 골드";
-            upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
-            upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
+            upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0))) + " 골드";
+            if (tempUpgradeData.max == -1 || tempUpgrade.upgrade[id] < tempUpgradeData.max)
+            {
+                upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
+                upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
+            }
+            else if (tempUpgrade.upgrade[id] >= tempUpgradeData.max)
+            {
+                upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV.MAX";
+                upgradeItem.transform.GetChild(5).gameObject.SetActive(true);
+            }
         }
     }
 
     private void BuyUnit(int id)
     {
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-        int finalPrice = unitData.price;
+        int finalPrice = Mathf.RoundToInt(unitData.price * (1 - (permUpgrade.complete.Contains(unitDiscount.Key) ? unitDiscount.Value.value : 0)));
         if (goods.gold >= finalPrice)
         {
             goods.gold -= finalPrice;
@@ -126,9 +147,10 @@ public class ShopManager : MonoBehaviour, IWindow
     {
         TempUpgradeData tempUpgradeData = DataManger.Instance.GetTempUpgradeData(id);
 
-        if (goods.gold >= tempUpgradeData.price)
+        int totalPrice = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0)));
+        if (goods.gold >= totalPrice)
         {
-            goods.gold -= tempUpgradeData.price;
+            goods.gold -= totalPrice;
             tempUpgrade.upgrade[id]++;
             // 골드 텍스트 수정 추가
             UIManager.Instance.SetGoldText();
@@ -137,7 +159,6 @@ public class ShopManager : MonoBehaviour, IWindow
         {
             Debug.Log("골드가 부족합니다.");
         }
-        ResetUpgrade();
-        ResetUnit();
+        Reset();
     }
 }

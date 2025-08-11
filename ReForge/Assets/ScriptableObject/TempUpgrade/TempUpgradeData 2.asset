@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: TempUpgradeData 2
   m_EditorClassIdentifier: 
   id: 1
-  dataName: "\uC720\uB2DB \uD30C\uC6CC \uC99D\uAC00"
-  upgradeType: 1
+  dataName: "\uC791\uC5C5\uB7C9 \uC99D\uAC00"
+  upgradeType: 6
   value: 0.1
   price: 100
+  max: -1
   sprite: {fileID: -6346165763731716011, guid: 41fef6488fe72524f9a86226441254e0, type: 3}

@@ -29,8 +29,15 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
     private UnitInfo curUnit;
 
-    private int point;
+    private int totalPoint;
     private bool resetOpen;
+
+    private KeyValuePair<int, TempUpgradeData> posTemp;
+    private KeyValuePair<int, PermUpgradeData> posPerm;
+    private KeyValuePair<int, TempUpgradeData> workTemp;
+    private KeyValuePair<int, PermUpgradeData> workPerm;
+    private KeyValuePair<int, PermUpgradeData> pointGain;
+
     async void Start()
     {
         Setting();
@@ -41,11 +48,27 @@ public class ReinforceManager : MonoBehaviour, IWindow
         await DataManger.Instance.WaitForLoadingUnitData();
         Reset();
         reset.GetChild(3).GetComponent<Button>().onClick.AddListener(() => TryReset());
+
+        posTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.ReinforcePosibility);
+
+        posPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.ReinforcePosibility);
+
+        workTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
+
+        workPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
+
+        pointGain = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UpPointGain);
     }
 
     void Update()
     {
-        point = goods.gold / 10000;
+        int point = goods.gold / 10000;
+        totalPoint = Mathf.RoundToInt(point * (1 + (permUpgrade.complete.Contains(pointGain.Key) ? pointGain.Value.value : 0)));
         if (point > 0 && !resetOpen)
         {
             reset.gameObject.SetActive(true);
@@ -54,7 +77,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
         if (resetOpen)
         {
-            reset.GetChild(2).GetComponent<TMP_Text>().text = point.ToString();
+            reset.GetChild(2).GetComponent<TMP_Text>().text = totalPoint.ToString();
         }
     }
 
@@ -164,7 +187,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
         float random = Random.Range(0, 100f);
         Debug.Log(random);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-        if (unitData.posibility >= random)
+
+        float totalPosibility = Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
+                                                                    * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
+        if (totalPosibility >= random)
         {
             if (curUnit.upgrade == 2)
             {
@@ -192,7 +218,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
         float random = Random.Range(0, 100f);
         Debug.Log(random);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
-        if (unitData.posibility >= random)
+
+        float totalPosibility = Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
+                                                                    * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
+        if (totalPosibility >= random)
         {
             if (unitInfo.upgrade == 2)
             {
@@ -231,9 +260,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
             GameObject star = Instantiate(starPrefab, starParent);
             star.transform.localPosition += new Vector3(-5 * upgrade + 10 * i, 8, 0);
         }
-
+        int totalWork = Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[workTemp.Key] * workTemp.Value.value)
+                                        * (1 + (permUpgrade.complete.Contains(workPerm.Key) ? workPerm.Value.value : 0)));
         unitDetail.GetChild(0).GetComponent<TMP_Text>().text = unitData.dataName;
-        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = unitData.power + " 파워";
+        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = totalWork + " 파워";
     }
 
     private void ShowUpgrade(UnitInfo unitInfo)
@@ -276,7 +306,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
             }
         }
         // 각 단계마다 1성~3성, 3성 강화 시 다음 단계로 성장
-        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + unitData.posibility;
+        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
+                                                                                                                * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
     }
 
     private void PlaceOutsourcing()
@@ -309,7 +340,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
     public void TryReset()
     {
         DataManger.Instance.ResetData();
-        permUpgrade.upPoint += point;
+        permUpgrade.upPoint += totalPoint;
         Reset();
         reset.gameObject.SetActive(false);
         resetOpen = false;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,14 @@ public class ProjectManager : MonoBehaviour, IWindow
     private UnitInfo curUnit;
 
     private Coroutine coroutine;
+
+    private KeyValuePair<int, TempUpgradeData> workSpeedTemp;
+    private KeyValuePair<int, TempUpgradeData> unitPowerTemp;
+    private KeyValuePair<int, TempUpgradeData> goldGainTemp;
+    private KeyValuePair<int, PermUpgradeData> workSpeedPerm;
+    private KeyValuePair<int, PermUpgradeData> unitPowerPerm;
+    private KeyValuePair<int, PermUpgradeData> goldGainPerm;
+
     async void Start()
     {
         unit = DataManger.Instance.unit;
@@ -39,7 +48,29 @@ public class ProjectManager : MonoBehaviour, IWindow
         reinforceBtn.onClick.AddListener(() => PlaceReinforce());
 
         await DataManger.Instance.WaitForLoadingProjectData();
+        await DataManger.Instance.WaitForLoadingPermUpgradeData();
+        await DataManger.Instance.WaitForLoadingTempUpgradeData();
+        
         SetProjectList();
+        // 제한 시간 구현
+
+        workSpeedTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.WorkSpeed);
+
+        unitPowerTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
+
+        goldGainTemp = DataManger.Instance.tempUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.GoldGain);
+
+        workSpeedPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.WorkSpeed);
+
+        unitPowerPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitPower);
+
+        goldGainPerm = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.GoldGain);
     }
 
     void OnEnable()
@@ -60,6 +91,8 @@ public class ProjectManager : MonoBehaviour, IWindow
         StartCoroutine(WaitForAnimator(work.projectID));
         if (work.projectID != -1) notice.SetActive(false);
         else notice.SetActive(true);
+
+        EditText();
     }
 
     private void SetUnitList()
@@ -157,7 +190,8 @@ public class ProjectManager : MonoBehaviour, IWindow
         unitDetail.gameObject.SetActive(true);
 
         unitDetail.GetChild(0).GetComponent<TMP_Text>().text = unitData.dataName;
-        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = unitData.power + " 파워";
+        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)
+                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0))) + " 파워";
     }
 
     private void SetProject(int id)
@@ -167,7 +201,8 @@ public class ProjectManager : MonoBehaviour, IWindow
         work.projectID = id;
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
         projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
-        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = projectData.rewardGold + " 골드";
+        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+                                                            * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
         StartCoroutine(WaitForAnimator(id));
 
         if (work.projectID != -1) notice.SetActive(false);
@@ -179,6 +214,18 @@ public class ProjectManager : MonoBehaviour, IWindow
             StopCoroutine(coroutine);
         }
         coroutine = StartCoroutine(StartProject(id));
+    }
+
+    private void EditText()
+    {
+        if (work.projectID == -1) return;
+
+        ProjectData projectData = DataManger.Instance.GetProjectData(work.projectID);
+
+        projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
+        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
+        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+                                                            * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
     }
 
     private IEnumerator WaitForAnimator(int id)
@@ -207,9 +254,12 @@ public class ProjectManager : MonoBehaviour, IWindow
         slider.maxValue = max;
         slider.value = max;
         rateText.text = "100.00%";
+
         while (cur > 0)
         {
-            float time = 1f * (1 - tempUpgrade.upgrade[3] * DataManger.Instance.GetTempUpgradeData(3).value);
+            float time = 1f * (1 - tempUpgrade.upgrade[workSpeedTemp.Key] * workSpeedTemp.Value.value)
+                            * (1 - (permUpgrade.complete.Contains(workSpeedPerm.Key) ? workSpeedPerm.Value.value : 0));
+
             yield return new WaitForSeconds(time);
             power = 0;
             foreach (UnitInfo unitInfo in unit.units)
@@ -217,7 +267,8 @@ public class ProjectManager : MonoBehaviour, IWindow
                 if (unitInfo.place != 2) continue;
                 UnitData unitData = DataManger.Instance.GetUnitData(unitInfo.id);
                 Debug.Log(unitData.power);
-                power += unitData.power * (1 + tempUpgrade.upgrade[2] * DataManger.Instance.GetTempUpgradeData(2).value);
+                power += Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)
+                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0)));
             }
 
             cur -= power;
@@ -227,7 +278,8 @@ public class ProjectManager : MonoBehaviour, IWindow
             slider.value = cur;
             rateText.text = rate.ToString("F2") + "%";
         }
-        goods.gold += (int)(projectData.rewardGold * (1 + tempUpgrade.upgrade[0] * DataManger.Instance.GetTempUpgradeData(0).value));
+        goods.gold += Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+                                                            * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0)));
         work.outsourcingMax += projectData.unitMax;
         work.completeProject.Add(projectData.id);
         projectDetail.gameObject.SetActive(false);

@@ -15,8 +15,9 @@ public class TempUpgradeData : ScriptableObject
 {
     public int id;
     public string dataName;
-    public TempUpgradeType upgradeType;
+    public UpgradeType upgradeType;
     public float value;
     public int price;
+    public int max;
     public Sprite sprite;
 }

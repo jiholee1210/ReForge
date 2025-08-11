@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum PermUpgradeType
+public enum UpgradeType
 {
     PlusReinforce,
     UpgradeDiscount,
@@ -20,7 +20,7 @@ public class PermUpgradeData : ScriptableObject
     public int id;
     public string dataName;
     public string desc;
-    public PermUpgradeType upgradeType;
+    public UpgradeType upgradeType;
     public float value;
     public int price;
 }

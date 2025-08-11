@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class AutoManager : MonoBehaviour, IWindow
     [SerializeField] private TMP_Dropdown upgradeGrade;
     [SerializeField] private Toggle autoBuyCheck;
     [SerializeField] private Toggle autoUpgradeCheck;
+    [SerializeField] private GameObject canAuto;
 
     public static event Action OnBuyUnit;
     public static event Action<UnitInfo> OnUpgradeUnit;
@@ -28,6 +30,8 @@ public class AutoManager : MonoBehaviour, IWindow
 
     private Coroutine autoBuy;
     private Coroutine autoUpgrade;
+
+    private int autoKey;
     void Start()
     {
         unit = DataManger.Instance.unit;
@@ -38,6 +42,10 @@ public class AutoManager : MonoBehaviour, IWindow
         shopUnit = DataManger.Instance.shopUnit;
 
         DefaultSetting();
+
+        autoKey = DataManger.Instance.permUpgradeDataDict
+                    .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.Auto)
+                    .Key;
     }
 
     void OnEnable()
@@ -66,6 +74,12 @@ public class AutoManager : MonoBehaviour, IWindow
     {
         // auto 수치 기반으로 드롭다운 value 값 초기화
         SetItem();
+
+        if (permUpgrade.complete.Contains(autoKey))
+        {
+            canAuto.SetActive(false);
+            // canAuto 제작
+        }
     }
 
     private void SetItem()

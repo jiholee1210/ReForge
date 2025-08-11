@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   dataName: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9 \uC99D\uAC00"
-  upgradeType: 4
+  upgradeType: 9
   value: 0.1
   price: 100
+  max: -1
   sprite: {fileID: 2916443186719565247, guid: 9bf0deac07740394aaa68f9b6061aeba, type: 3}
