@@ -32,7 +32,8 @@ public class AutoManager : MonoBehaviour, IWindow
     private Coroutine autoUpgrade;
 
     private int autoKey;
-    void Start()
+    private KeyValuePair<int, PermUpgradeData> discount;
+    async void Start()
     {
         unit = DataManger.Instance.unit;
         goods = DataManger.Instance.goods;
@@ -43,9 +44,13 @@ public class AutoManager : MonoBehaviour, IWindow
 
         DefaultSetting();
 
+        await DataManger.Instance.WaitForLoadingPermUpgradeData();
         autoKey = DataManger.Instance.permUpgradeDataDict
                     .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.Auto)
                     .Key;
+
+        discount = DataManger.Instance.permUpgradeDataDict
+                        .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitDiscount);
     }
 
     void OnEnable()
@@ -182,6 +187,14 @@ public class AutoManager : MonoBehaviour, IWindow
         UnitData unitData = DataManger.Instance.GetUnitData(unitId);
         while (true)
         {
+            int totalPrice = Mathf.RoundToInt(unitData.price * (1 - (permUpgrade.complete.Contains(discount.Key) ? discount.Value.value : 0)));
+            if (goods.gold < totalPrice)
+            {
+                Debug.Log("자동 구매 골드 부족");
+                yield return waitForOneSecond;
+                continue;
+            }
+
             UnitInfo unitInfo = new UnitInfo
             {
                 id = unitId,
@@ -192,7 +205,7 @@ public class AutoManager : MonoBehaviour, IWindow
             // 실시간 유닛 목록 초기화
             unit.units.Add(unitInfo);
             Debug.Log("유닛 자동 구매 : " + unitInfo.id + " " + auto.buyLevel);
-            goods.gold -= unitData.price;
+            goods.gold -= totalPrice;
             OnBuyUnit?.Invoke();
             UIManager.Instance.SetGoldText();
             yield return waitForOneSecond;

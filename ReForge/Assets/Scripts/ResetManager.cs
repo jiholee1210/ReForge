@@ -17,8 +17,11 @@ public class ResetManager : MonoBehaviour, IWindow
         for (int i = 0; i < up.Length; i++)
         {
             int index = i;
+            PermUpgradeData permUpgradeData = DataManger.Instance.GetPermUpgradeData(index);
+
             up[index].onClick.AddListener(() => BuyUpgrade(index));
             up[index].GetComponent<Tooltip>().SetUpgrade(index);
+            up[index].transform.GetChild(0).GetComponent<Image>().sprite = permUpgradeData.sprite;
         }
 
         for (int i = 0; i < permUpgrade.open; i++)

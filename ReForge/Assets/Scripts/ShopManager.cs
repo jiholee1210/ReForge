@@ -92,16 +92,27 @@ public class ShopManager : MonoBehaviour, IWindow
             GameObject upgradeItem = Instantiate(upgradePrefab, upgradeParent);
             upgradeItem.transform.GetChild(0).GetComponent<Image>().sprite = tempUpgradeData.sprite;
             upgradeItem.transform.GetChild(1).GetComponent<TMP_Text>().text = tempUpgradeData.dataName;
-            upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0))) + " 골드";
-            if (tempUpgradeData.max == -1 || tempUpgrade.upgrade[id] < tempUpgradeData.max)
+            if (tempUpgradeData.max != -1)
             {
+                upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(tempUpgradeData.valueList[tempUpgrade.upgrade[id]]) + " 골드";
+                if (tempUpgradeData.max <= tempUpgrade.upgrade[id])
+                {
+                    upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV.MAX";
+                    upgradeItem.transform.GetChild(5).gameObject.SetActive(true);
+                }
+                else
+                {
+                    upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
+                    upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
+                }
+            }
+            else
+            {
+                upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0))
+                                                                                                                        * MathF.Pow(1.1f, tempUpgrade.upgrade[id])) + " 골드";
+
                 upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
                 upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
-            }
-            else if (tempUpgrade.upgrade[id] >= tempUpgradeData.max)
-            {
-                upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV.MAX";
-                upgradeItem.transform.GetChild(5).gameObject.SetActive(true);
             }
         }
     }
@@ -147,7 +158,9 @@ public class ShopManager : MonoBehaviour, IWindow
     {
         TempUpgradeData tempUpgradeData = DataManger.Instance.GetTempUpgradeData(id);
 
-        int totalPrice = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0)));
+        int totalPrice = tempUpgradeData.max == -1
+                        ? Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0)) * MathF.Pow(1.1f, tempUpgrade.upgrade[id]))
+                        : Mathf.RoundToInt(tempUpgradeData.valueList[tempUpgrade.upgrade[id]]);
         if (goods.gold >= totalPrice)
         {
             goods.gold -= totalPrice;

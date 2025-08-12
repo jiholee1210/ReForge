@@ -50,7 +50,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         await DataManger.Instance.WaitForLoadingProjectData();
         await DataManger.Instance.WaitForLoadingPermUpgradeData();
         await DataManger.Instance.WaitForLoadingTempUpgradeData();
-        
+
         SetProjectList();
         // 제한 시간 구현
 
@@ -71,6 +71,11 @@ public class ProjectManager : MonoBehaviour, IWindow
 
         goldGainPerm = DataManger.Instance.permUpgradeDataDict
             .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.GoldGain);
+
+        if (work.projectID != -1)
+        {
+            StartCoroutine(StartProject(work.projectID));
+        }
     }
 
     void OnEnable()
@@ -191,7 +196,8 @@ public class ProjectManager : MonoBehaviour, IWindow
 
         unitDetail.GetChild(0).GetComponent<TMP_Text>().text = unitData.dataName;
         unitDetail.GetChild(1).GetComponent<TMP_Text>().text = Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)
-                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0))) + " 파워";
+                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0))
+                                        * (1 + (unitInfo.upgrade * 0.1f))) + " 작업";
     }
 
     private void SetProject(int id)
@@ -200,7 +206,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         ProjectData projectData = DataManger.Instance.GetProjectData(id);
         work.projectID = id;
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
-        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
+        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
         projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
         StartCoroutine(WaitForAnimator(id));
@@ -223,7 +229,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         ProjectData projectData = DataManger.Instance.GetProjectData(work.projectID);
 
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
-        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 노력치";
+        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
         projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
     }
@@ -268,7 +274,8 @@ public class ProjectManager : MonoBehaviour, IWindow
                 UnitData unitData = DataManger.Instance.GetUnitData(unitInfo.id);
                 Debug.Log(unitData.power);
                 power += Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)
-                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0)));
+                                        * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0))
+                                        * (1 + (unitInfo.upgrade * 0.1f)));
             }
 
             cur -= power;

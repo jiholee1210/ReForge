@@ -188,8 +188,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
         Debug.Log(random);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
 
-        float totalPosibility = Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
-                                                                    * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
+        float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
+                                                                - unitData.id * 5 * curUnit.upgrade), 0f, 100f);
         if (totalPosibility >= random)
         {
             if (curUnit.upgrade == 2)
@@ -219,8 +219,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
         Debug.Log(random);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
 
-        float totalPosibility = Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
-                                                                    * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
+        float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
+                                                                - unitData.id * 5 * unitInfo.upgrade), 0f, 100f);
         if (totalPosibility >= random)
         {
             if (unitInfo.upgrade == 2)
@@ -261,9 +261,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
             star.transform.localPosition += new Vector3(-5 * upgrade + 10 * i, 8, 0);
         }
         int totalWork = Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[workTemp.Key] * workTemp.Value.value)
-                                        * (1 + (permUpgrade.complete.Contains(workPerm.Key) ? workPerm.Value.value : 0)));
+                                        * (1 + (permUpgrade.complete.Contains(workPerm.Key) ? workPerm.Value.value : 0))
+                                        * (1 + (unitInfo.upgrade * 0.1f)));
         unitDetail.GetChild(0).GetComponent<TMP_Text>().text = unitData.dataName;
-        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = totalWork + " 파워";
+        unitDetail.GetChild(1).GetComponent<TMP_Text>().text = totalWork + " 작업";
     }
 
     private void ShowUpgrade(UnitInfo unitInfo)
@@ -306,8 +307,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
             }
         }
         // 각 단계마다 1성~3성, 3성 강화 시 다음 단계로 성장
-        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Min(100f, unitData.posibility * (1 + tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value)
-                                                                                                                * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0)));
+        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value* (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
+                                                                                                            - unitData.id * 5 * unitInfo.upgrade), 0f, 100f);;
     }
 
     private void PlaceOutsourcing()

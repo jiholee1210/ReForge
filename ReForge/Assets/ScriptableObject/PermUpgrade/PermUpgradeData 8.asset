@@ -18,3 +18,4 @@ MonoBehaviour:
   upgradeType: 0
   value: 30
   price: 1
+  sprite: {fileID: -2444217769510198865, guid: 1ee273ab511a4bc42bc6a46de515c6e9, type: 3}

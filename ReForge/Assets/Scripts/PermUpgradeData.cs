@@ -23,4 +23,5 @@ public class PermUpgradeData : ScriptableObject
     public UpgradeType upgradeType;
     public float value;
     public int price;
+    public Sprite sprite;
 }
