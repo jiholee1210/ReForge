@@ -9,7 +9,8 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 {
     [SerializeField] private Transform unitDetail;
     [SerializeField] private Transform outsourcingDetail;
-    [SerializeField] private TMP_Text count;
+    [SerializeField] private TMP_Text countText;
+    [SerializeField] private TMP_Text workText;
 
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private Transform unitParent;
@@ -36,6 +37,10 @@ public class OutsourcingManager : MonoBehaviour, IWindow
     private KeyValuePair<int, PermUpgradeData> workSpeedPerm;
     private KeyValuePair<int, PermUpgradeData> unitPowerPerm;
     private KeyValuePair<int, PermUpgradeData> goldGainPerm;
+
+    private bool inWindow = false;
+    private List<GameObject> objectList = new();
+
     async void Start()
     {
         unit = DataManger.Instance.unit;
@@ -68,10 +73,21 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
         goldGainPerm = DataManger.Instance.permUpgradeDataDict
             .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.GoldGain);
-            
+
         if (work.outsourcingID != -1)
         {
             SetOutsourcing(work.outsourcingID);
+        }
+    }
+
+    void Update()
+    {
+        if (inWindow && curUnit != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                PlaceReinforce();
+            }
         }
     }
 
@@ -95,6 +111,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         else notice.SetActive(true);
 
         EditText();
+        inWindow = true;
     }
 
     private void SetUnitList()
@@ -105,7 +122,8 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         }
 
         SetCount();
-        List<GameObject> unitList = new();
+        SetWork();
+        objectList.Clear();
         foreach (UnitInfo unitInfo in unit.units)
         {
             if (unitInfo.place != 1) continue;
@@ -114,7 +132,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             UnitData unitData = DataManger.Instance.GetUnitData(id);
 
             bool found = false;
-            if (unitList.Count == 0)
+            if (objectList.Count == 0)
             {
                 GameObject newUnit = Instantiate(unitPrefab, unitParent);
                 newUnit.GetComponent<UnitStat>().SetStat(id, upgrade);
@@ -124,15 +142,15 @@ public class OutsourcingManager : MonoBehaviour, IWindow
                 {
                     ShowDetail(unitInfo);
                 });
-                unitList.Add(newUnit);
+                objectList.Add(newUnit);
             }
             else
             {
-                for (int i = 0; i < unitList.Count; i++)
+                for (int i = 0; i < objectList.Count; i++)
                 {
-                    if (unitList[i].GetComponent<UnitStat>().CheckStat(id, upgrade))
+                    if (objectList[i].GetComponent<UnitStat>().CheckStat(id, upgrade))
                     {
-                        unitList[i].GetComponent<UnitStat>().PlusCount();
+                        objectList[i].GetComponent<UnitStat>().PlusCount();
                         found = true;
                         break;
                     }
@@ -148,7 +166,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
                     {
                         ShowDetail(unitInfo);
                     });
-                    unitList.Add(newUnit);
+                    objectList.Add(newUnit);
                 }
             }
         }
@@ -283,21 +301,59 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private void SetCount()
     {
-        count.text = work.curOut + "/" + work.outsourcingMax;
+        countText.text = work.curOut + "/" + work.outsourcingMax;
+    }
+
+    private void SetWork()
+    {
+        float workPower = 0;
+        foreach (UnitInfo unit in unit.units) {
+            if (unit.place == 1)
+            {
+                workPower += DataManger.Instance.GetUnitData(unit.id).power * (1 + (unit.upgrade * 0.1f));
+            }
+        }
+        int totalWork = Mathf.RoundToInt(workPower * (1 + tempUpgrade.upgrade[unitPowerTemp.Key] * unitPowerTemp.Value.value)
+                                                    * (1 + (permUpgrade.complete.Contains(unitPowerPerm.Key) ? unitPowerPerm.Value.value : 0)));
+        workText.text = totalWork + " 작업";
+    }
+
+    private void CheckCount()
+    {
+        bool found = false;
+        foreach (GameObject unit in objectList)
+        {
+            if (curUnit != null && unit.GetComponent<UnitStat>().CheckStat(curUnit.id, curUnit.upgrade))
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            unitDetail.gameObject.SetActive(false);
+        }
     }
 
     private void PlaceReinforce()
     {
+        if (curUnit == null) return;
         curUnit.place = 0;
+        work.curOut--;
         SetUnitList();
-        unitDetail.gameObject.SetActive(false);
+        CheckCount();
+        curUnit = unit.units.FirstOrDefault(unit => unit.id == curUnit.id && unit.upgrade == curUnit.upgrade && unit.place == 1);
     }
 
     private void TryReset()
     {
         StopAllCoroutines();
         coroutine = null;
-
         outsourcingDetail.gameObject.SetActive(false);
+    }
+
+    public void Leave()
+    {
+        inWindow = false;
     }
 }

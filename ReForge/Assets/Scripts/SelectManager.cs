@@ -29,9 +29,12 @@ public class SelectManager : MonoBehaviour
     {
         button[index].GetComponent<Image>().color = Color.green;
         button[prevWindow].GetComponent<Image>().color = Color.white;
-        selects[prevWindow].SetActive(false);
+        
         selects[index].SetActive(true);
+        selects[prevWindow].SetActive(false);
+
         managers[index].GetComponent<IWindow>().Reset();
+        managers[prevWindow].GetComponent<IWindow>().Leave();
         prevWindow = index;
     }
 }

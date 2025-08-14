@@ -17,7 +17,7 @@ public class AutoManager : MonoBehaviour, IWindow
     [SerializeField] private GameObject canAuto;
 
     public static event Action OnBuyUnit;
-    public static event Action<UnitInfo> OnUpgradeUnit;
+    public static event Action<List<UnitInfo>> OnUpgradeUnit;
 
     private Unit unit;
     private Goods goods;
@@ -26,7 +26,7 @@ public class AutoManager : MonoBehaviour, IWindow
     private Auto auto;
     private ShopUnit shopUnit;
 
-    private WaitForSeconds waitForOneSecond = new WaitForSeconds(0.2f);
+    private WaitForSeconds waitForOneSecond = new WaitForSeconds(0.5f);
 
     private Coroutine autoBuy;
     private Coroutine autoUpgrade;
@@ -42,15 +42,18 @@ public class AutoManager : MonoBehaviour, IWindow
         auto = DataManger.Instance.auto;
         shopUnit = DataManger.Instance.shopUnit;
 
-        DefaultSetting();
-
+        await DataManger.Instance.WaitForLoadingUnitData();
         await DataManger.Instance.WaitForLoadingPermUpgradeData();
+        await DataManger.Instance.WaitForLoadingTempUpgradeData();
+
         autoKey = DataManger.Instance.permUpgradeDataDict
                     .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.Auto)
                     .Key;
 
         discount = DataManger.Instance.permUpgradeDataDict
                         .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UnitDiscount);
+
+        DefaultSetting();
     }
 
     void OnEnable()
@@ -70,9 +73,6 @@ public class AutoManager : MonoBehaviour, IWindow
         upgradeGrade.value = auto.upgradeGrade;
         autoBuyCheck.isOn = auto.autoBuyOn;
         autoUpgradeCheck.isOn = auto.autoUpgradeOn;
-
-        if (auto.autoBuyOn) autoBuy = StartCoroutine(AutoBuyUnit());
-        if (auto.autoUpgradeOn) autoUpgrade = StartCoroutine(AutoUpgradeUnit());
     }
 
     public void Reset()
@@ -92,26 +92,25 @@ public class AutoManager : MonoBehaviour, IWindow
         buyLevel.ClearOptions();
 
         List<string> options = new();
-        for (int i = 0; i < shopUnit.canBuy.Count; i++) {
+        for (int i = 0; i < shopUnit.canBuy.Count; i++)
+        {
             options.Add($"+{i} 유닛");
         }
 
         buyLevel.AddOptions(options);
+        buyLevel.value = auto.buyLevel;
     }
 
     public void SwitchAutoBuy(bool value)
     {
-        Debug.Log(value);
         if (value)
         {
-            Debug.Log("활성화");
             autoBuy = StartCoroutine(AutoBuyUnit());
         }
         else
         {
             if (autoBuy != null)
             {
-                Debug.Log("비활성화");
                 StopCoroutine(autoBuy);
                 autoBuy = null;
             }
@@ -183,14 +182,12 @@ public class AutoManager : MonoBehaviour, IWindow
     {
         // 매 초 목표 유닛 자동 구매
         int unitId = auto.buyLevel;
-
         UnitData unitData = DataManger.Instance.GetUnitData(unitId);
         while (true)
         {
             int totalPrice = Mathf.RoundToInt(unitData.price * (1 - (permUpgrade.complete.Contains(discount.Key) ? discount.Value.value : 0)));
             if (goods.gold < totalPrice)
             {
-                Debug.Log("자동 구매 골드 부족");
                 yield return waitForOneSecond;
                 continue;
             }
@@ -204,7 +201,6 @@ public class AutoManager : MonoBehaviour, IWindow
             // 실시간 골드 출력 수정
             // 실시간 유닛 목록 초기화
             unit.units.Add(unitInfo);
-            Debug.Log("유닛 자동 구매 : " + unitInfo.id + " " + auto.buyLevel);
             goods.gold -= totalPrice;
             OnBuyUnit?.Invoke();
             UIManager.Instance.SetGoldText();
@@ -215,16 +211,21 @@ public class AutoManager : MonoBehaviour, IWindow
     private IEnumerator AutoUpgradeUnit()
     {
         // 매 초 목표 유닛보다 낮은 단계의 유닛 자동 강화
+        List<UnitInfo> unitList = new();
         while (true)
         {
+            unitList.Clear();
             for (int i = 0; i < unit.units.Count; i++)
             {
                 if (unit.units[i].place != 0) continue;
                 if (unit.units[i].id < auto.upgradeLevel || (unit.units[i].id == auto.upgradeLevel && unit.units[i].upgrade < auto.upgradeGrade))
                 {
-                    OnUpgradeUnit?.Invoke(unit.units[i]);
+                    unitList.Add(unit.units[i]);
+
                 }
             }
+            OnUpgradeUnit?.Invoke(unitList);
+
             yield return waitForOneSecond;
         }
     }
@@ -239,5 +240,10 @@ public class AutoManager : MonoBehaviour, IWindow
         autoUpgradeCheck.isOn = false;
 
         buyLevel.ClearOptions();
+    }
+
+    public void Leave()
+    {
+        
     }
 }

@@ -87,4 +87,8 @@ public class ResetManager : MonoBehaviour, IWindow
                 break;
         }
     }
+
+    public void Leave()
+    {
+    }
 }

@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
 public class UnitStat : MonoBehaviour
 {
-    private int id;
-    private int upgrade;
-    public int count;
+    [SerializeField] private int id;
+    [SerializeField] private int upgrade;
+    [SerializeField] public int count;
 
     public void SetStat(int unitId, int unitUpgrade)
     {
@@ -13,11 +13,13 @@ public class UnitStat : MonoBehaviour
         upgrade = unitUpgrade;
         count = 1;
 
-        for (int i = 0; i < upgrade + 1; i++) {
+        for (int i = 0; i < upgrade + 1; i++)
+        {
             int index = i;
             transform.GetChild(2).GetChild(index).gameObject.SetActive(true);
         }
-        
+
+        transform.GetChild(1).GetComponent<Text>().text = count.ToString();
     }
 
     public bool CheckStat(int unitId, int unitUpgrade)
@@ -34,5 +36,26 @@ public class UnitStat : MonoBehaviour
     {
         count++;
         transform.GetChild(1).GetComponent<Text>().text = count.ToString();
+    }
+
+    public void MinusCount()
+    {
+        count--;
+        transform.GetChild(1).GetComponent<Text>().text = count.ToString();
+    }
+
+    public int GetID()
+    {
+        return id;
+    }
+
+    public int GetUpgrade()
+    {
+        return upgrade;
+    }
+
+    public int GetCount()
+    {
+        return count;
     }
 }

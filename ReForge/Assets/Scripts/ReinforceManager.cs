@@ -38,6 +38,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
     private KeyValuePair<int, PermUpgradeData> workPerm;
     private KeyValuePair<int, PermUpgradeData> pointGain;
 
+    private bool inWindow = false;
+
+    private List<GameObject> objectList = new();
+
     async void Start()
     {
         Setting();
@@ -46,6 +50,9 @@ public class ReinforceManager : MonoBehaviour, IWindow
         projectBtn.onClick.AddListener(() => PlaceProject());
 
         await DataManger.Instance.WaitForLoadingUnitData();
+        await DataManger.Instance.WaitForLoadingPermUpgradeData();
+        await DataManger.Instance.WaitForLoadingTempUpgradeData();
+
         Reset();
         reset.GetChild(3).GetComponent<Button>().onClick.AddListener(() => TryReset());
 
@@ -79,18 +86,37 @@ public class ReinforceManager : MonoBehaviour, IWindow
         {
             reset.GetChild(2).GetComponent<TMP_Text>().text = totalPoint.ToString();
         }
+
+        if (inWindow && curUnit != null)
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                // 외주
+                PlaceOutsourcing();
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                // 프로젝트
+                PlaceProject();
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                // 강화
+                TryUpgrade();
+            }
+        }
     }
 
     private void OnEnable()
     {
         AutoManager.OnBuyUnit += HandleAutoBuy;
-        AutoManager.OnUpgradeUnit += (unit) => HandleAutoUpgrade(unit);
+        AutoManager.OnUpgradeUnit += (unitList) => HandleAutoUpgrade(unitList);
     }
 
     private void OnDisable()
     {
         AutoManager.OnBuyUnit -= HandleAutoBuy;
-        AutoManager.OnUpgradeUnit -= (unit) => HandleAutoUpgrade(unit);
+        AutoManager.OnUpgradeUnit -= (unitList) => HandleAutoUpgrade(unitList);
     }
 
     private void Setting()
@@ -107,8 +133,13 @@ public class ReinforceManager : MonoBehaviour, IWindow
         unitDetail.gameObject.SetActive(false);
         unitUpgrade.gameObject.SetActive(false);
         curUnit = null;
+        inWindow = true;
         SetUnitWindow();
-        Debug.Log("리스트 초기화");
+    }
+
+    public void Leave()
+    {
+        inWindow = false;
     }
 
     private void SetUnitWindow()
@@ -125,8 +156,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
         {
             Destroy(transform.gameObject);
         }
+        objectList.Clear();
 
-        List<GameObject> unitList = new();
         foreach (UnitInfo unitInfo in unit.units)
         {
             if (unitInfo.place != 0) continue;
@@ -134,62 +165,78 @@ public class ReinforceManager : MonoBehaviour, IWindow
             int upgrade = unitInfo.upgrade;
             UnitData unitData = DataManger.Instance.GetUnitData(id);
 
-            bool found = false;
-            if (unitList.Count == 0)
+            bool foundObject = false;
+            if (objectList.Count == 0)
             {
                 GameObject newUnit = Instantiate(unitPrefab, unitParent);
+                objectList.Add(newUnit);
                 newUnit.GetComponent<UnitStat>().SetStat(id, upgrade);
                 newUnit.transform.GetChild(0).GetComponent<Image>().sprite = unitData.sprite;
-                newUnit.transform.GetChild(1).GetComponent<Text>().text = "1";
                 newUnit.transform.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     ShowDetail(unitInfo);
                     ShowUpgrade(unitInfo);
                 });
-                unitList.Add(newUnit);
+                objectList.Add(newUnit);
             }
             else
             {
-                for (int i = 0; i < unitList.Count; i++)
+                for (int i = 0; i < objectList.Count; i++)
                 {
-                    if (unitList[i].GetComponent<UnitStat>().CheckStat(id, upgrade))
+                    if (objectList[i].GetComponent<UnitStat>().CheckStat(id, upgrade))
                     {
-                        unitList[i].GetComponent<UnitStat>().PlusCount();
-                        found = true;
+                        objectList[i].GetComponent<UnitStat>().PlusCount();
+                        foundObject = true;
                         break;
                     }
                 }
 
-                if (!found)
+                if (!foundObject)
                 {
                     GameObject newUnit = Instantiate(unitPrefab, unitParent);
+                    objectList.Add(newUnit);
                     newUnit.GetComponent<UnitStat>().SetStat(id, upgrade);
                     newUnit.transform.GetChild(0).GetComponent<Image>().sprite = unitData.sprite;
-                    newUnit.transform.GetChild(1).GetComponent<Text>().text = "1";
                     newUnit.transform.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         ShowDetail(unitInfo);
                         ShowUpgrade(unitInfo);
                     });
-                    unitList.Add(newUnit);
+                    objectList.Add(newUnit);
                 }
             }
+        }
+        CheckCount();
+    }
+
+    private void CheckCount()
+    {
+        bool found = false;
+        foreach (GameObject unit in objectList)
+        {
+            if (curUnit != null && unit.GetComponent<UnitStat>().CheckStat(curUnit.id, curUnit.upgrade))
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            curUnit = null;
+            unitDetail.gameObject.SetActive(false);
+            unitUpgrade.gameObject.SetActive(false);
         }
     }
 
     private void TryUpgrade()
     {
-        // 확률에 따라서 강화 실행
-        // 강화 성공 시 기존 유닛의 upgrade 값 1증가
-        // 실패 시 기존 유닛 리스트에서 제거
-        // 강화 수치가 2 일때 승급 시도
         int id = curUnit.id;
+        int upgrade = curUnit.upgrade;
         float random = Random.Range(0, 100f);
-        Debug.Log(random);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
 
         float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
-                                                                - unitData.id * 5 * curUnit.upgrade), 0f, 100f);
+                                                                - (unitData.id + 1) * 5 * curUnit.upgrade), 0f, 100f);
         if (totalPosibility >= random)
         {
             if (curUnit.upgrade == 2)
@@ -208,37 +255,47 @@ public class ReinforceManager : MonoBehaviour, IWindow
         {
             unit.units.Remove(curUnit);
         }
-
-        Reset();
+        SetUnitWindow();
+        curUnit = unit.units.FirstOrDefault(unit => unit.id == id && unit.upgrade == upgrade && unit.place == 0);
     }
 
-    private void TryUpgrade(UnitInfo unitInfo)
+    private void TryUpgrade(List<UnitInfo> unitList)
     {
-        int id = unitInfo.id;
-        float random = Random.Range(0, 100f);
-        Debug.Log(random);
-        UnitData unitData = DataManger.Instance.GetUnitData(id);
-
-        float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
-                                                                - unitData.id * 5 * unitInfo.upgrade), 0f, 100f);
-        if (totalPosibility >= random)
+        for (int i = 0; i < unitList.Count; i++)
         {
-            if (unitInfo.upgrade == 2)
+            int id = unitList[i].id;
+            int upgrade = unitList[i].upgrade;
+            float random = Random.Range(0, 100f);
+            UnitData unitData = DataManger.Instance.GetUnitData(id);
+            if (posPerm.Equals(default(KeyValuePair<int, PermUpgradeData>))) return;
+
+            float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
+                                                                    - (unitData.id + 1) * 5 * upgrade), 0f, 100f);
+            if (totalPosibility >= random)
             {
-                // 승급
-                unitInfo.id += 1;
-                unitInfo.upgrade = 0;
+                if (upgrade == 2)
+                {
+                    // 승급
+                    unitList[i].id += 1;
+                    unitList[i].upgrade = 0;
+                }
+                else
+                {
+                    // 강화
+                    unitList[i].upgrade += 1;
+                }
             }
             else
             {
-                // 강화
-                unitInfo.upgrade += 1;
+                unit.units.Remove(unitList[i]);
+            }
+
+            if (curUnit != null && curUnit.Equals(unitList[i]))
+            {
+                curUnit = unit.units.FirstOrDefault(unit => unit.id == id && unit.upgrade == upgrade && unit.place == 0);
             }
         }
-        else
-        {
-            unit.units.Remove(unitInfo);
-        }
+        SetUnitWindow();
     }
 
     private void ShowDetail(UnitInfo unitInfo)
@@ -308,23 +365,25 @@ public class ReinforceManager : MonoBehaviour, IWindow
         }
         // 각 단계마다 1성~3성, 3성 강화 시 다음 단계로 성장
         unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value* (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
-                                                                                                            - unitData.id * 5 * unitInfo.upgrade), 0f, 100f);;
+                                                                                                            - (unitData.id + 1) * 5 * unitInfo.upgrade), 0f, 100f);;
     }
 
     private void PlaceOutsourcing()
     {
-        if (work.curOut >= work.outsourcingMax) return;
+        if (work.curOut >= work.outsourcingMax || curUnit == null) return;
         work.curOut++;
         curUnit.place = 1;
-        Reset();
+        curUnit = unit.units.FirstOrDefault(unit => unit.id == curUnit.id && unit.upgrade == curUnit.upgrade && unit.place == 0);
+        SetUnitWindow();
     }
 
     private void PlaceProject()
     {
-        if (work.curProject >= 4) return;
+        if (work.curProject >= 4 || curUnit == null) return;
         work.curProject++;
         curUnit.place = 2;
-        Reset();
+        curUnit = unit.units.FirstOrDefault(unit => unit.id == curUnit.id && unit.upgrade == curUnit.upgrade && unit.place == 0);
+        SetUnitWindow();
     }
 
     private void HandleAutoBuy()
@@ -332,10 +391,9 @@ public class ReinforceManager : MonoBehaviour, IWindow
         SetUnitWindow();
     }
 
-    private void HandleAutoUpgrade(UnitInfo unitInfo)
+    private void HandleAutoUpgrade(List<UnitInfo> unitList)
     {
-        TryUpgrade(unitInfo);
-        SetUnitWindow();
+        TryUpgrade(unitList);
     }
 
     public void TryReset()

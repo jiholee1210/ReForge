@@ -284,11 +284,11 @@ public class UnitInfo
 
 public class Goods
 {
-    public int gold = 1000;
+    public int gold = 100000;
 
     public void Reset(int baseGold)
     {
-        gold = 1000 + baseGold;
+        gold = 100000 + baseGold;
     }
 }
 
