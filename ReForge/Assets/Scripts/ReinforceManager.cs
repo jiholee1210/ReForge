@@ -37,6 +37,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
     private KeyValuePair<int, TempUpgradeData> workTemp;
     private KeyValuePair<int, PermUpgradeData> workPerm;
     private KeyValuePair<int, PermUpgradeData> pointGain;
+    private KeyValuePair<int, PermUpgradeData> addPos;
 
     private bool inWindow = false;
 
@@ -70,12 +71,20 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
         pointGain = DataManger.Instance.permUpgradeDataDict
             .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.UpPointGain);
+
+        addPos = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.PlusReinforce);
     }
 
     void Update()
     {
         int point = goods.gold / 10000;
-        totalPoint = Mathf.RoundToInt(point * (1 + (permUpgrade.complete.Contains(pointGain.Key) ? pointGain.Value.value : 0)));
+
+        if (pointGain.Value != null)
+        {
+            totalPoint = Mathf.RoundToInt(point * (1 + (permUpgrade.complete.Contains(pointGain.Key) ? pointGain.Value.value : 0)));
+        }
+        
         if (point > 0 && !resetOpen)
         {
             reset.gameObject.SetActive(true);
@@ -232,31 +241,33 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         int id = curUnit.id;
         int upgrade = curUnit.upgrade;
-        float random = Random.Range(0, 100f);
+        float random1 = Random.Range(0, 100f);
         UnitData unitData = DataManger.Instance.GetUnitData(id);
 
         float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
                                                                 - (unitData.id + 1) * 5 * curUnit.upgrade), 0f, 100f);
-        if (totalPosibility >= random)
+        if (totalPosibility >= random1)
         {
-            if (curUnit.upgrade == 2)
+            int up;
+            float random2 = Random.Range(0, 100f);
+            float additional = permUpgrade.complete.Contains(addPos.Key) ? addPos.Value.value : 0f;
+            if (additional >= random2)
             {
-                // 승급
-                curUnit.id += 1;
-                curUnit.upgrade = 0;
+                up = 2;
             }
             else
             {
-                // 강화
-                curUnit.upgrade += 1;
+                up = 1;
             }
+            curUnit.id += (curUnit.upgrade + up) / 3;
+            curUnit.upgrade = (curUnit.upgrade + up) % 3;
         }
         else
         {
             unit.units.Remove(curUnit);
         }
-        SetUnitWindow();
         curUnit = unit.units.FirstOrDefault(unit => unit.id == id && unit.upgrade == upgrade && unit.place == 0);
+        SetUnitWindow();
     }
 
     private void TryUpgrade(List<UnitInfo> unitList)
@@ -364,8 +375,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
             }
         }
         // 각 단계마다 1성~3성, 3성 강화 시 다음 단계로 성장
-        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value* (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
-                                                                                                            - (unitData.id + 1) * 5 * unitInfo.upgrade), 0f, 100f);;
+        unitUpgrade.GetChild(1).GetComponent<TMP_Text>().text = "확률 : " + Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
+                                                                                                            - (unitData.id + 1) * 5 * unitInfo.upgrade), 0f, 100f);
     }
 
     private void PlaceOutsourcing()

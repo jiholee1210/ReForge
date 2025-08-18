@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PermUpgradeData 7
   m_EditorClassIdentifier: 
   id: 3
-  dataName: "UP \uD3EC\uC778\uD2B8 \uC99D\uAC00"
-  desc: 7
+  dataName: "\uB9AC\uC14B \uD6A8\uC728"
+  desc: "UP \uD3EC\uC778\uD2B8 +200%"
   upgradeType: 5
   value: 2
   price: 1

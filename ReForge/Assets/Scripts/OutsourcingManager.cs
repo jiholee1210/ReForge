@@ -116,6 +116,14 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private void SetUnitList()
     {
+        unit.units.Sort((a, b) =>
+        {
+            int cmp = b.id.CompareTo(a.id);
+            if (cmp != 0) return cmp;
+
+            return b.upgrade.CompareTo(a.upgrade);
+        });
+        
         foreach (Transform transform in unitParent)
         {
             Destroy(transform.gameObject);

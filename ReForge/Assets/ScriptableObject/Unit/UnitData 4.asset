@@ -16,6 +16,6 @@ MonoBehaviour:
   dataName: "+4 \uC77C\uBC18\uC778"
   power: 160
   posibility: -30
-  price: 15000
+  price: 60000
   nextUnit: 5
   sprite: {fileID: -3455839168180757821, guid: 9511d7b9b3ef9ee42a9ab591ea7015bb, type: 3}

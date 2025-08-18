@@ -1,15 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TempUpgradeType
-{
-    None,
-    UnitPower,
-    WorkSpeed,
-    ReinforcePosibility,
-    GoldGain
-}
-
 [CreateAssetMenu(fileName = "TempUpgradeData", menuName = "TempUpgradeData", order = 0)]
 public class TempUpgradeData : ScriptableObject
 {

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class SelectManager : MonoBehaviour
         for (int i = 0; i < button.Length; i++)
         {
             int index = i;
-            button[index].onClick.AddListener(() => OpenWindow(index));
+            button[index].onClick.AddListener(() => StartCoroutine(OpenWindow(index)));
         }
     }
 
@@ -25,16 +26,40 @@ public class SelectManager : MonoBehaviour
 
     }
 
-    private void OpenWindow(int index)
+    private IEnumerator OpenWindow(int index)
     {
+        if (index == prevWindow) yield break;
+
         button[index].GetComponent<Image>().color = Color.green;
         button[prevWindow].GetComponent<Image>().color = Color.white;
-        
-        selects[index].SetActive(true);
-        selects[prevWindow].SetActive(false);
 
+        selects[index].SetActive(true);
         managers[index].GetComponent<IWindow>().Reset();
+
+        bool isLeft = index > prevWindow;
+        yield return StartCoroutine(WaitForAnimation(isLeft, index));
+
+        selects[prevWindow].SetActive(false);
         managers[prevWindow].GetComponent<IWindow>().Leave();
         prevWindow = index;
+    }
+
+    private IEnumerator WaitForAnimation(bool left, int cur)
+    {
+        Animator prevAnimator = selects[prevWindow].GetComponent<Animator>();
+        Animator curAnimator = selects[cur].GetComponent<Animator>();
+
+        if (left)
+        {
+            prevAnimator.SetTrigger("left_out");
+            curAnimator.SetTrigger("right_in");
+        }
+        else
+        {
+            prevAnimator.SetTrigger("right_out");
+            curAnimator.SetTrigger("left_in");
+        }
+
+        yield return new WaitForSeconds(0.2f);
     }
 }

@@ -109,7 +109,7 @@ public class ShopManager : MonoBehaviour, IWindow
             else
             {
                 upgradeItem.transform.GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0))
-                                                                                                                        * MathF.Pow(1.3f, tempUpgrade.upgrade[id])) + " 골드";
+                                                                                                                        * MathF.Pow(1.5f, tempUpgrade.upgrade[id])) + " 골드";
 
                 upgradeItem.transform.GetChild(4).GetComponent<TMP_Text>().text = "LV." + tempUpgrade.upgrade[id];
                 upgradeItem.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BuyUpgrade(id));
@@ -159,7 +159,7 @@ public class ShopManager : MonoBehaviour, IWindow
         TempUpgradeData tempUpgradeData = DataManger.Instance.GetTempUpgradeData(id);
 
         int totalPrice = tempUpgradeData.max == -1
-                        ? Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0)) * MathF.Pow(1.3f, tempUpgrade.upgrade[id]))
+                        ? Mathf.RoundToInt(tempUpgradeData.price * (1 - (permUpgrade.complete.Contains(upDiscount.Key) ? upDiscount.Value.value : 0)) * MathF.Pow(1.5f, tempUpgrade.upgrade[id]))
                         : Mathf.RoundToInt(tempUpgradeData.valueList[tempUpgrade.upgrade[id]]);
         if (goods.gold >= totalPrice)
         {

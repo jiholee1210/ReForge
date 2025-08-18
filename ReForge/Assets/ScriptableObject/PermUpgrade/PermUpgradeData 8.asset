@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PermUpgradeData 8
   m_EditorClassIdentifier: 
   id: 8
-  dataName: "\uCD94\uAC00 \uAC15\uD654 \uD655\uB960"
-  desc: 8
+  dataName: "\uC804\uBB38 \uAD50\uC721"
+  desc: "\uCD94\uAC00 \uAC15\uD654 \uD655\uB960 +15%"
   upgradeType: 0
-  value: 30
+  value: 15
   price: 1
   sprite: {fileID: -2444217769510198865, guid: 1ee273ab511a4bc42bc6a46de515c6e9, type: 3}
