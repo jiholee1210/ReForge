@@ -223,8 +223,8 @@ public class ProjectManager : MonoBehaviour, IWindow
         ProjectData projectData = DataManger.Instance.GetProjectData(id);
         work.projectID = id;
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
-        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
-        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+        projectDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
+        projectDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
         StartCoroutine(WaitForAnimator(id));
 
@@ -246,8 +246,8 @@ public class ProjectManager : MonoBehaviour, IWindow
         ProjectData projectData = DataManger.Instance.GetProjectData(work.projectID);
 
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
-        projectDetail.GetChild(3).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
-        projectDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+        projectDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
+        projectDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
     }
 
@@ -266,8 +266,8 @@ public class ProjectManager : MonoBehaviour, IWindow
 
     private IEnumerator StartProject(int id)
     {
-        Slider slider = projectDetail.GetChild(2).GetComponent<Slider>();
-        TMP_Text rateText = projectDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>();
+        Slider slider = projectDetail.GetChild(2).GetChild(0).GetComponent<Slider>();
+        TMP_Text rateText = projectDetail.GetChild(2).GetChild(0).GetChild(3).GetComponent<TMP_Text>();
 
         float power;
         // dps 기준으로  slider value 값 측정
@@ -310,6 +310,7 @@ public class ProjectManager : MonoBehaviour, IWindow
         notice.SetActive(true);
 
         UIManager.Instance.SetGoldText();
+        UIManager.Instance.GoldEffect();
         SetProjectList();
     }
 

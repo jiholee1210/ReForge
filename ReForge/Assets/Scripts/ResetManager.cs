@@ -9,9 +9,11 @@ public class ResetManager : MonoBehaviour, IWindow
     [SerializeField] private GameObject[] windows;
 
     private PermUpgrade permUpgrade;
+    private Goods goods;
     async void Start()
     {
         permUpgrade = DataManger.Instance.permUpgrade;
+        goods = DataManger.Instance.goods;
         await DataManger.Instance.WaitForLoadingPermUpgradeData();
 
         for (int i = 0; i < up.Length; i++)
@@ -30,7 +32,7 @@ public class ResetManager : MonoBehaviour, IWindow
         }
         foreach (int i in permUpgrade.complete)
         {
-            up[i].enabled = true;
+            up[i].enabled = false;
             up[i].GetComponent<Image>().color = Color.gray;
         }
     }
@@ -45,6 +47,7 @@ public class ResetManager : MonoBehaviour, IWindow
         PermUpgradeData permUpgradeData = DataManger.Instance.GetPermUpgradeData(index);
         if (permUpgrade.upPoint >= permUpgradeData.price)
         {
+            if (index == 1) goods.gold += 1000;
             permUpgrade.complete.Add(index);
             permUpgrade.upPoint -= permUpgradeData.price;
             up[index].enabled = false;

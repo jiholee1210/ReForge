@@ -4,7 +4,7 @@ using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance { get; private set;}
+    public static UIManager Instance { get; private set; }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private TMP_Text goldText;
     [SerializeField] private RectTransform goldUI;
@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
     }
-    
+
     void Start()
     {
         goods = DataManger.Instance.goods;
@@ -24,16 +24,19 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SetGoldText()
     {
         goldText.text = goods.gold.ToString();
+    }
 
+    public void GoldEffect()
+    {
         goldUI.localScale = Vector3.one;
 
         goldUI.DOKill();
-        goldUI.DOPunchScale(Vector3.one * 0.5f, 0.3f, 1, 1f); 
+        goldUI.DOPunchScale(Vector3.one * 0.5f, 0.15f, 1, 1f);
     }
 }

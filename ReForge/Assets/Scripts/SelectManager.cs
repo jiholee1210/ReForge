@@ -9,6 +9,7 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private GameObject[] managers;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private int prevWindow;
+    private bool change = false;
     void Start()
     {
         prevWindow = 0;
@@ -28,8 +29,9 @@ public class SelectManager : MonoBehaviour
 
     private IEnumerator OpenWindow(int index)
     {
-        if (index == prevWindow) yield break;
+        if (index == prevWindow || change) yield break;
 
+        change = true;
         button[index].GetComponent<Image>().color = Color.green;
         button[prevWindow].GetComponent<Image>().color = Color.white;
 
@@ -42,6 +44,7 @@ public class SelectManager : MonoBehaviour
         selects[prevWindow].SetActive(false);
         managers[prevWindow].GetComponent<IWindow>().Leave();
         prevWindow = index;
+        change = false;
     }
 
     private IEnumerator WaitForAnimation(bool left, int cur)

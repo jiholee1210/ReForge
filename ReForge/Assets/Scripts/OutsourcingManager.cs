@@ -16,6 +16,7 @@ public class OutsourcingManager : MonoBehaviour, IWindow
     [SerializeField] private Transform unitParent;
     [SerializeField] private GameObject outsourcingPrefab;
     [SerializeField] private Transform outsourcingParent;
+    [SerializeField] private Image radial;
 
     [SerializeField] private Button reinforceBtn;
 
@@ -221,8 +222,8 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(id);
         work.outsourcingID = id;
         outsourcingDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = outsourcingData.dataName;
-        outsourcingDetail.GetChild(3).GetComponent<TMP_Text>().text = outsourcingData.max + " 작업량";
-        outsourcingDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+        outsourcingDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = outsourcingData.max + " 작업량";
+        outsourcingDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
         StartCoroutine(WaitForAnimator(id));
 
@@ -244,8 +245,8 @@ public class OutsourcingManager : MonoBehaviour, IWindow
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(work.outsourcingID);
 
         outsourcingDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = outsourcingData.dataName;
-        outsourcingDetail.GetChild(3).GetComponent<TMP_Text>().text = outsourcingData.max + " 작업량";
-        outsourcingDetail.GetChild(4).GetComponent<TMP_Text>().text = Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+        outsourcingDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = outsourcingData.max + " 작업량";
+        outsourcingDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0))) + " 골드";
     }
 
@@ -264,8 +265,8 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private IEnumerator StartOutsourcing(int id)
     {
-        Slider slider = outsourcingDetail.GetChild(2).GetComponent<Slider>();
-        TMP_Text rateText = outsourcingDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>();
+        Slider slider = outsourcingDetail.GetChild(2).GetChild(0).GetComponent<Slider>();
+        TMP_Text rateText = outsourcingDetail.GetChild(2).GetChild(0).GetChild(3).GetComponent<TMP_Text>();
 
         while (true)
         {
@@ -282,7 +283,16 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             {
                 float time = 1f * (1 - tempUpgrade.upgrade[workSpeedTemp.Key] * workSpeedTemp.Value.value)
                             * (1 - (permUpgrade.complete.Contains(workSpeedPerm.Key) ? workSpeedPerm.Value.value : 0));
-                yield return new WaitForSeconds(time);
+                 
+                float t = 0f;
+                radial.fillAmount = 0f;
+                while (t < time)
+                {
+                    t += Time.deltaTime;
+                    radial.fillAmount = Mathf.Clamp01(t / time);
+                    yield return null;
+                }
+
                 power = 0;
                 foreach (UnitInfo unitInfo in unit.units)
                 {
@@ -304,9 +314,9 @@ public class OutsourcingManager : MonoBehaviour, IWindow
             goods.gold += Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0)));
             UIManager.Instance.SetGoldText();
+            UIManager.Instance.GoldEffect();
         }
     }
-
     private void SetCount()
     {
         countText.text = work.curOut + "/" + work.outsourcingMax;
