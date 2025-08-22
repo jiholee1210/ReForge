@@ -12,6 +12,12 @@ public enum UpgradeType
     WorkSpeed,
     ReinforcePosibility,
     GoldGain,
+    CritPos,
+    CritValue,
+    GoldPerTime,
+    Relic,
+    RelicPos,
+    RelicValue,
 }
 
 [CreateAssetMenu(fileName = "PermUpgradeData", menuName = "PermUpgradeData", order = 0)]
