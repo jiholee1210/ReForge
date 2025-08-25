@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7455c4c02b5c4749affb862ea9e86b9, type: 3}
   m_Name: RelicData 7
   m_EditorClassIdentifier: 
-  id: 0
-  dataName: 
-  upgradeType: 0
-  desc: 
+  id: 7
+  dataName: "\uAE08\uAD34 \uAC00\uBC29"
+  upgradeType: 9
+  desc: "\uAE08\uAD34 \uAC00\uBC29"
   value: 0
+  sprite: {fileID: -2444217769510198865, guid: c2a7e6d74e56859479b6ec20de0c02b2, type: 3}

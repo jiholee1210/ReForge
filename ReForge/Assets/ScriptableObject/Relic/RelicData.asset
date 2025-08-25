@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: RelicData
   m_EditorClassIdentifier: 
   id: 0
-  dataName: 
-  upgradeType: 0
-  desc: 
+  dataName: "\uC2A4\uD1B1\uC6CC\uCE58"
+  upgradeType: 7
+  desc: "\uC2A4\uD1B1\uC6CC\uCE58"
   value: 0
+  sprite: {fileID: -2444217769510198865, guid: 71559748989cf174c90d06c8d4215871, type: 3}

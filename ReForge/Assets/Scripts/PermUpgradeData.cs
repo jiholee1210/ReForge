@@ -18,6 +18,10 @@ public enum UpgradeType
     Relic,
     RelicPos,
     RelicValue,
+    Final,
+    DestroyPos,
+    DestroyFrag,
+    DestroyGain,
 }
 
 [CreateAssetMenu(fileName = "PermUpgradeData", menuName = "PermUpgradeData", order = 0)]

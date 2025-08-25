@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Relic
+  m_EditorClassIdentifier: 
+  m_GroupName: Relic
+  m_GUID: eac3624c9b8c59e418a58b2746326d51
+  m_SerializeEntries:
+  - m_GUID: 2aadcf1cc5ec13a4388597922d4ea399
+    m_Address: Assets/ScriptableObject/Relic/RelicData 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bf740f1466356148a36461d23f0ab24
+    m_Address: Assets/ScriptableObject/Relic/RelicData 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 494f907a81c38094fa726ec38df41b33
+    m_Address: Assets/ScriptableObject/Relic/RelicData 14.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5064a3d6482f8a34c9f3a3f63bd2eb6f
+    m_Address: Assets/ScriptableObject/Relic/RelicData 9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 691b3b30d4771874589d72614ce7e8af
+    m_Address: Assets/ScriptableObject/Relic/RelicData 11.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ee70e89850b6b84dbb4bd23583c89a8
+    m_Address: Assets/ScriptableObject/Relic/RelicData 12.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72868686dfd246c4a886f291398d487b
+    m_Address: Assets/ScriptableObject/Relic/RelicData 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d009301d7d6fc749978feef317a292e
+    m_Address: Assets/ScriptableObject/Relic/RelicData 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ed18913f2af05b41b34992609900e9b
+    m_Address: Assets/ScriptableObject/Relic/RelicData 10.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99e6cc8fd8106814e8681c84e6ccf48e
+    m_Address: Assets/ScriptableObject/Relic/RelicData 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f10e10048d19c84b9fc5d65b56b2dc5
+    m_Address: Assets/ScriptableObject/Relic/RelicData 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8dd8941f36607e40af832a7ec9c2eb5
+    m_Address: Assets/ScriptableObject/Relic/RelicData 13.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad7171678a34c714088a81873c23e415
+    m_Address: Assets/ScriptableObject/Relic/RelicData 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd59d599155a53844b596fdd264c99ee
+    m_Address: Assets/ScriptableObject/Relic/RelicData 15.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc5e10ecbad33964f8e2c62c507d7da3
+    m_Address: Assets/ScriptableObject/Relic/RelicData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd5b4b302ce969e4a8db55908c07aed5
+    m_Address: Assets/ScriptableObject/Relic/RelicData 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Relic
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1fff9770450d0454f9bed001f08e4aee, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 48ed41e2250265d4baf4a0bb8c81029b, type: 2}
+    - {fileID: 11400000, guid: 1d89f00a44a7834438b6f8a6aa0099c1, type: 2}

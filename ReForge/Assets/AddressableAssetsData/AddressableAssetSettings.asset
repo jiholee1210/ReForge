@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 8afd4176e41588f4c9aa1b2389f3f9c8
   m_currentHash:
     serializedVersion: 2
-    Hash: 53d305cf7e4c4f3b3d9fb6c8eb274c68
+    Hash: fe4bfcfbdf3818325794b990b560b0d2
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -65,6 +65,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a28b6765fabc46488299549485304b4, type: 2}
   - {fileID: 11400000, guid: 321a310a84ae0b7459aff06fe65dfd6a, type: 2}
   - {fileID: 11400000, guid: 08ad1618e2a65964d843175745ab7426, type: 2}
+  - {fileID: 11400000, guid: 6b25ccfc58aa1004683bcfeb5d036a2f, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
@@ -109,6 +110,7 @@ MonoBehaviour:
     - Project
     - TempUpgrade
     - PermUpgrade
+    - Relic
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 8a382386d167598409aa9f394950e2ae, type: 2}

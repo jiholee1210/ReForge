@@ -19,6 +19,7 @@ public class DataManger : MonoBehaviour
     public Dictionary<int, ProjectData> projectDataDict;
     public Dictionary<int, TempUpgradeData> tempUpgradeDataDict;
     public Dictionary<int, PermUpgradeData> permUpgradeDataDict;
+    public Dictionary<int, RelicData> relicDataDict;
 
     public Unit unit;
     public Goods goods;
@@ -27,12 +28,14 @@ public class DataManger : MonoBehaviour
     public ShopUnit shopUnit;
     public Auto auto;
     public Work work;
+    public Relic relic;
 
     private Task waitForUnitData;
     private Task waitForOutsourcingData;
     private Task waitForProjectData;
     private Task waitForTempUpgradeData;
     private Task waitForPermUpgradeData;
+    private Task waitForRelicData;
 
     private string unitPath;
     private string goodsPath;
@@ -41,6 +44,7 @@ public class DataManger : MonoBehaviour
     private string shopUnitPath;
     private string autoPath;
     private string workPath;
+    private string relicPath;
 
     private Dictionary<Type, (object Instance, string path)> saveDict = new();
 
@@ -58,6 +62,7 @@ public class DataManger : MonoBehaviour
         waitForProjectData = LoadProjectData();
         waitForTempUpgradeData = LoadTempUpgradeData();
         waitForPermUpgradeData = LoadPermUpgradeData();
+        waitForRelicData = LoadRelicData();
         
         DataSetting();
     }
@@ -75,7 +80,7 @@ public class DataManger : MonoBehaviour
             yield return new WaitForSeconds(180f);
             SaveAll();
         }
-    }   
+    }
 
     private void Register()
     {
@@ -86,6 +91,7 @@ public class DataManger : MonoBehaviour
         saveDict[typeof(ShopUnit)] = (shopUnit, shopUnitPath);
         saveDict[typeof(Auto)] = (auto, autoPath);
         saveDict[typeof(Work)] = (work, workPath);
+        saveDict[typeof(Relic)] = (relic, relicPath);  
     }
 
     private void DataSetting()
@@ -97,6 +103,7 @@ public class DataManger : MonoBehaviour
         shopUnit = new();
         auto = new();
         work = new();
+        relic = new();
 
         unitPath = Path.Combine(Application.persistentDataPath, "unit.json");
         goodsPath = Path.Combine(Application.persistentDataPath, "goods.json");
@@ -105,6 +112,7 @@ public class DataManger : MonoBehaviour
         shopUnitPath = Path.Combine(Application.persistentDataPath, "shopUnit.json");
         autoPath = Path.Combine(Application.persistentDataPath, "auto.json");
         workPath = Path.Combine(Application.persistentDataPath, "work.json");
+        relicPath = Path.Combine(Application.persistentDataPath, "relic.json");
 
         Register();
 
@@ -196,6 +204,17 @@ public class DataManger : MonoBehaviour
         await handle.Task;
     }
 
+    private async Task LoadRelicData()
+    {
+        relicDataDict = new Dictionary<int, RelicData>();
+        var handel = Addressables.LoadAssetsAsync<RelicData>("Relic", relic =>
+        {
+            relicDataDict[relic.id] = relic;
+        });
+
+        await handel.Task;
+    }
+
     public Task WaitForLoadingUnitData()
     {
         return waitForUnitData;
@@ -221,6 +240,11 @@ public class DataManger : MonoBehaviour
         return waitForPermUpgradeData;
     }
 
+    public Task WaitForLoadingRelicData()
+    {
+        return waitForRelicData;
+    }
+
     public UnitData GetUnitData(int id)
     {
         return unitDataDict[id];
@@ -244,6 +268,11 @@ public class DataManger : MonoBehaviour
     public PermUpgradeData GetPermUpgradeData(int id)
     {
         return permUpgradeDataDict[id];
+    }
+
+    public RelicData GetRelicData(int id)
+    {
+        return relicDataDict[id];
     }
 
     public void ResetData()
@@ -362,4 +391,9 @@ public class Work
         outsourcingMax = 15;
         completeProject = new();
     }
+}
+
+public class Relic
+{
+    public int[] relics = new int[16];
 }

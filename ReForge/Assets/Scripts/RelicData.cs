@@ -9,4 +9,5 @@ public class RelicData : ScriptableObject
     public UpgradeType upgradeType;
     public string desc;
     public float value;
+    public Sprite sprite;
 }
