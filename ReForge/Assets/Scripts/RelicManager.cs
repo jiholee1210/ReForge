@@ -1,4 +1,7 @@
 
+using System.Collections;
+using System.Linq;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,11 +12,17 @@ public class RelicManager : MonoBehaviour, IWindow
     [SerializeField] private Transform relicParent;
     [SerializeField] private Transform detail;
     [SerializeField] private Button pick;
+
+    [SerializeField] private GameObject slotList;
+    [SerializeField] private RectTransform content;
     // 유물 목록 생성
     private PermUpgrade permUpgrade;
     private Goods goods;
     private Relic relic;
 
+    private float itemWidth = 18f;
+
+    private int count;
     async void Start()
     {
         permUpgrade = DataManger.Instance.permUpgrade;
@@ -34,7 +43,7 @@ public class RelicManager : MonoBehaviour, IWindow
 
     public void Leave()
     {
-        
+
     }
 
     private void RandomPick()
@@ -42,6 +51,9 @@ public class RelicManager : MonoBehaviour, IWindow
         // 유물 랜덤 뽑기
         // relics 리스트에 존재하지 않는 id의 유물만 획득하도록 구현
         // 현재 소지 유물 갯수에 비례해서 뽑기 비용 상승
+        if (!relic.relics.Contains(0)) return;
+
+        SpinRelic();
         int random = Random.Range(0, relic.relics.Length);
 
         int loop = 0;
@@ -103,5 +115,40 @@ public class RelicManager : MonoBehaviour, IWindow
         }
     }
 
-    
+    private void SpinRelic()
+    {
+        slotList.SetActive(true);
+        content.anchoredPosition = Vector2.zero;
+        count = 0;
+        for (int i = 0; i < content.childCount; i++)
+        {
+            content.GetChild(i).GetComponent<RectTransform>().anchoredPosition = new Vector2(-54 + i * itemWidth, 0);
+        }
+
+        DOTween.To(
+            () => content.anchoredPosition.x,
+            x => content.anchoredPosition = new Vector2(x, 0),
+            -432f, 2.5f)
+            .SetEase(Ease.OutCubic)
+            .OnUpdate(() =>
+            {
+                RepositionItem();
+            });
+    }
+
+    private void RepositionItem()
+    {
+        int index = count % 10;
+        RectTransform item = content.GetChild(index).GetComponent<RectTransform>();
+        if (content.anchoredPosition.x < -68 - (itemWidth * count))
+        {
+            float maxX = content.Cast<Transform>()
+                .Max(c => c.GetComponent<RectTransform>().anchoredPosition.x);
+
+            Debug.Log(maxX);
+            item.anchoredPosition = new Vector2(maxX + itemWidth, 0);
+            count++;
+        }
+        // 현재 위치이동 반복실행으로 버그 있음. 방식 수정해야함.
+    }               
 }
