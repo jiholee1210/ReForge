@@ -8,7 +8,7 @@ public class UnitData : ScriptableObject
     public string dataName;
     public float power;
     public float posibility;
-    public int price;
+    public float price;
     public int nextUnit;
     public Sprite sprite;
 }

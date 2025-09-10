@@ -15,14 +15,44 @@ MonoBehaviour:
   m_GroupName: PermUpgrade
   m_GUID: 258548726e740c24ab2c56bf37aa4a45
   m_SerializeEntries:
+  - m_GUID: 07131f6b3912996429fe5d524c1d1f8a
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 12.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1a2cc3eeb1b4c4d4b9c86ec035f9e547
     m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - PermUpgrade
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 342e100c57a613f479bf256f08463092
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 13.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c7e97c05b8709f4dae19dd9709e097c
     m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cf7e7538e624b34aacacbac0d5e6bdb
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 15.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 638326dc0736ce547aac48cefbc90769
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 18.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 721fec6ad9de0e7448a85e6c74c5f6f9
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 17.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - PermUpgrade
@@ -45,8 +75,32 @@ MonoBehaviour:
     m_SerializedLabels:
     - PermUpgrade
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fd0e51d8371ffe439084c315dcafa63
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 11.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3fa1a7174eb9cd42955ea42b932f68a
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 16.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfea57f7ad732664f8e29b020a2bfb52
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 10.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d2f979cf1b9d48240ab55da6a06dce67
     m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PermUpgrade
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df0c00139321119408bf83b1ff1274fd
+    m_Address: Assets/ScriptableObject/PermUpgrade/PermUpgradeData 14.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - PermUpgrade

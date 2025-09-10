@@ -16,10 +16,9 @@ public enum UpgradeType
     CritValue,
     GoldPerTime,
     Relic,
-    RelicPos,
+    RelicDiscount,
     RelicValue,
     Final,
-    DestroyPos,
     DestroyFrag,
     DestroyGain,
 }

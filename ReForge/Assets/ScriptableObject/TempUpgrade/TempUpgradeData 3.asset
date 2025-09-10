@@ -18,10 +18,10 @@ MonoBehaviour:
   value: 0.1
   valueList:
   - 1000
-  - 50000
-  - 2500000
-  - 125000000
-  - 6.25e+10
+  - 20000
+  - 400000
+  - 8000000
+  - 160000000
   price: 100
   max: 5
   sprite: {fileID: -8541206262234670912, guid: 226cdc7c176656a47ae13ad6ffcea96e, type: 3}

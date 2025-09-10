@@ -1,22 +1,30 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ResetManager : MonoBehaviour, IWindow
 {
-    [SerializeField] private Button[] up;
+    [SerializeField] private Transform upParent;
     [SerializeField] private TMP_Text point;
     [SerializeField] private GameObject[] windows;
 
     private PermUpgrade permUpgrade;
     private Goods goods;
+    private List<Button> up = new();
     async void Start()
     {
         permUpgrade = DataManger.Instance.permUpgrade;
         goods = DataManger.Instance.goods;
         await DataManger.Instance.WaitForLoadingPermUpgradeData();
 
-        for (int i = 0; i < up.Length; i++)
+        for (int i = 0; i < upParent.childCount; i++)
+        {
+            int index = i;
+            up.Add(upParent.GetChild(index).GetComponent<Button>());
+        }
+
+        for (int i = 0; i < up.Count; i++)
         {
             int index = i;
             PermUpgradeData permUpgradeData = DataManger.Instance.GetPermUpgradeData(index);
@@ -47,7 +55,17 @@ public class ResetManager : MonoBehaviour, IWindow
         PermUpgradeData permUpgradeData = DataManger.Instance.GetPermUpgradeData(index);
         if (permUpgrade.upPoint >= permUpgradeData.price)
         {
-            if (index == 1) goods.gold += 1000;
+            if (index == 0)
+            {
+                goods.gold += 1000;
+                UIManager.Instance.SetGoldText();
+            }
+
+            if (index == 11)
+            {
+                UIManager.Instance.ActiveRelic();
+            }
+
             permUpgrade.complete.Add(index);
             permUpgrade.upPoint -= permUpgradeData.price;
             up[index].enabled = false;
@@ -72,19 +90,19 @@ public class ResetManager : MonoBehaviour, IWindow
                 windows[0].SetActive(false);
                 permUpgrade.open = 1;
                 break;
-            case 4:
+            case 6:
                 windows[1].SetActive(false);
                 permUpgrade.open = 2;
                 break;
-            case 7:
+            case 10:
                 windows[2].SetActive(false);
                 permUpgrade.open = 3;
                 break;
-            case 8:
+            case 14:
                 windows[3].SetActive(false);
                 permUpgrade.open = 4;
                 break;
-            case 10:
+            case 18:
                 windows[4].SetActive(false);
                 permUpgrade.open = 5;
                 break;

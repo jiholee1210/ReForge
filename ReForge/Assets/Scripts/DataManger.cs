@@ -69,6 +69,7 @@ public class DataManger : MonoBehaviour
 
     void Start()
     {
+        if (permUpgrade.complete.Contains(11)) UIManager.Instance.ActiveRelic();
         StartCoroutine(AutoSave());
         save.onClick.AddListener(() => SaveAll());
     }
@@ -288,7 +289,10 @@ public class DataManger : MonoBehaviour
         work.Reset();
         SaveAll();
 
+        if (permUpgradeDataDict.ContainsKey(11)) UIManager.Instance.ActiveRelic();
+
         UIManager.Instance.SetGoldText();
+        UIManager.Instance.SetFragText();
         OnTryReset?.Invoke();
     }
 }
@@ -314,10 +318,12 @@ public class UnitInfo
 public class Goods
 {
     public int gold = 500;
+    public int frag;
 
     public void Reset(int baseGold)
     {
         gold = 500 + baseGold;
+        frag = 0;
     }
 }
 
@@ -396,4 +402,5 @@ public class Work
 public class Relic
 {
     public int[] relics = new int[16];
+    public int count;
 }

@@ -78,7 +78,7 @@ public class ProjectManager : MonoBehaviour, IWindow
 
         if (work.projectID != -1)
         {
-            StartCoroutine(StartProject(work.projectID));
+            SetProject(work.projectID);
         }
     }
 

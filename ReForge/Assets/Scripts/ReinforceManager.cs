@@ -38,6 +38,8 @@ public class ReinforceManager : MonoBehaviour, IWindow
     private KeyValuePair<int, PermUpgradeData> workPerm;
     private KeyValuePair<int, PermUpgradeData> pointGain;
     private KeyValuePair<int, PermUpgradeData> addPos;
+    private KeyValuePair<int, PermUpgradeData> fragPos;
+    private KeyValuePair<int, PermUpgradeData> fragValue;
 
     private bool inWindow = false;
 
@@ -74,6 +76,12 @@ public class ReinforceManager : MonoBehaviour, IWindow
 
         addPos = DataManger.Instance.permUpgradeDataDict
             .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.PlusReinforce);
+
+        fragPos = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.DestroyFrag);
+
+        fragValue = DataManger.Instance.permUpgradeDataDict
+            .FirstOrDefault(pair => pair.Value.upgradeType == UpgradeType.DestroyGain);
     }
 
     void Update()
@@ -265,6 +273,13 @@ public class ReinforceManager : MonoBehaviour, IWindow
         else
         {
             unit.units.Remove(curUnit);
+            float random = Random.Range(0, 100f);
+            float fragment = 10f + (permUpgrade.complete.Contains(fragPos.Key) ? fragPos.Value.value : 0);
+            if (random <= fragment)
+            {
+                goods.frag += Mathf.RoundToInt(Mathf.Pow(10, curUnit.id) * (curUnit.upgrade + 1) * (1 + (permUpgrade.complete.Contains(fragValue.Key) ? fragValue.Value.value : 0)));
+            }
+            UIManager.Instance.SetFragText();
         }
         curUnit = unit.units.FirstOrDefault(unit => unit.id == id && unit.upgrade == upgrade && unit.place == 0);
         SetUnitWindow();
