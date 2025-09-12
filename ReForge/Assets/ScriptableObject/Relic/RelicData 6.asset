@@ -16,5 +16,5 @@ MonoBehaviour:
   dataName: "\uB3C8\uB2E4\uBC1C"
   upgradeType: 3
   desc: "\uB3C8\uB2E4\uBC1C"
-  value: 0
+  value: 5000
   sprite: {fileID: -2444217769510198865, guid: 4c89aef3fdf241b4984bd8388c5bb70d, type: 3}

@@ -278,8 +278,10 @@ public class ReinforceManager : MonoBehaviour, IWindow
             if (random <= fragment)
             {
                 goods.frag += Mathf.RoundToInt(Mathf.Pow(10, curUnit.id) * (curUnit.upgrade + 1) * (1 + (permUpgrade.complete.Contains(fragValue.Key) ? fragValue.Value.value : 0)));
+                Debug.Log(Mathf.Pow(10, curUnit.id) + " " + (curUnit.upgrade + 1) + " " + (1 + (permUpgrade.complete.Contains(fragValue.Key) ? fragValue.Value.value : 0)));    
+                UIManager.Instance.SetFragText();
+                UIManager.Instance.FragEffect();
             }
-            UIManager.Instance.SetFragText();
         }
         curUnit = unit.units.FirstOrDefault(unit => unit.id == id && unit.upgrade == upgrade && unit.place == 0);
         SetUnitWindow();
@@ -291,29 +293,39 @@ public class ReinforceManager : MonoBehaviour, IWindow
         {
             int id = unitList[i].id;
             int upgrade = unitList[i].upgrade;
-            float random = Random.Range(0, 100f);
+            float random1 = Random.Range(0, 100f);
             UnitData unitData = DataManger.Instance.GetUnitData(id);
             if (posPerm.Equals(default(KeyValuePair<int, PermUpgradeData>))) return;
 
             float totalPosibility = Mathf.Clamp(unitData.posibility + (tempUpgrade.upgrade[posTemp.Key] * posTemp.Value.value * (1 + (permUpgrade.complete.Contains(posPerm.Key) ? posPerm.Value.value : 0))
                                                                     - (unitData.id + 1) * 5 * upgrade), 0f, 100f);
-            if (totalPosibility >= random)
+            if (totalPosibility >= random1)
             {
-                if (upgrade == 2)
+                int up;
+                float random2 = Random.Range(0, 100f);
+                float additional = permUpgrade.complete.Contains(addPos.Key) ? addPos.Value.value : 0f;
+                if (additional >= random2)
                 {
-                    // 승급
-                    unitList[i].id += 1;
-                    unitList[i].upgrade = 0;
+                    up = 2;
                 }
                 else
                 {
-                    // 강화
-                    unitList[i].upgrade += 1;
+                    up = 1;
                 }
+                unitList[i].id += (unitList[i].upgrade + up) / 3;
+                unitList[i].upgrade = (unitList[i].upgrade + up) % 3;
             }
             else
             {
                 unit.units.Remove(unitList[i]);
+                float random = Random.Range(0, 100f);
+                float fragment = 10f + (permUpgrade.complete.Contains(fragPos.Key) ? fragPos.Value.value : 0);
+                if (random <= fragment)
+                {
+                    goods.frag += Mathf.RoundToInt(Mathf.Pow(10, curUnit.id) * (curUnit.upgrade + 1) * (1 + (permUpgrade.complete.Contains(fragValue.Key) ? fragValue.Value.value : 0)));
+                    UIManager.Instance.SetFragText();
+                    UIManager.Instance.FragEffect();
+                }
             }
 
             if (curUnit != null && curUnit.Equals(unitList[i]))

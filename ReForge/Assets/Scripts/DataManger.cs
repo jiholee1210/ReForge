@@ -13,6 +13,7 @@ public class DataManger : MonoBehaviour
     public static DataManger Instance { get; private set; }
 
     [SerializeField] private Button save;
+    [SerializeField] private Button bankrupt;
 
     public Dictionary<int, UnitData> unitDataDict;
     public Dictionary<int, OutsourcingData> outsourcingDataDict;
@@ -63,7 +64,7 @@ public class DataManger : MonoBehaviour
         waitForTempUpgradeData = LoadTempUpgradeData();
         waitForPermUpgradeData = LoadPermUpgradeData();
         waitForRelicData = LoadRelicData();
-        
+
         DataSetting();
     }
 
@@ -72,6 +73,7 @@ public class DataManger : MonoBehaviour
         if (permUpgrade.complete.Contains(11)) UIManager.Instance.ActiveRelic();
         StartCoroutine(AutoSave());
         save.onClick.AddListener(() => SaveAll());
+        bankrupt.onClick.AddListener(() => ResetData());
     }
 
     private IEnumerator AutoSave()
@@ -92,7 +94,7 @@ public class DataManger : MonoBehaviour
         saveDict[typeof(ShopUnit)] = (shopUnit, shopUnitPath);
         saveDict[typeof(Auto)] = (auto, autoPath);
         saveDict[typeof(Work)] = (work, workPath);
-        saveDict[typeof(Relic)] = (relic, relicPath);  
+        saveDict[typeof(Relic)] = (relic, relicPath);
     }
 
     private void DataSetting()
@@ -201,7 +203,7 @@ public class DataManger : MonoBehaviour
         {
             permUpgradeDataDict[permUpgrade.id] = permUpgrade;
         });
-        
+
         await handle.Task;
     }
 

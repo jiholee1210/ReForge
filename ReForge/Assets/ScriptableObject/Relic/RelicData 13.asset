@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 13
   dataName: "\uBCF4\uB77C \uBCF4\uC11D"
-  upgradeType: 0
+  upgradeType: 17
   desc: "\uBCF4\uB77C \uBCF4\uC11D"
-  value: 0
+  value: 0.5
   sprite: {fileID: -2444217769510198865, guid: 95980cb8ce8f02845b5c7d8bac42eab9, type: 3}

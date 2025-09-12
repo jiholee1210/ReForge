@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text fragText;
 
     [SerializeField] private RectTransform goldUI;
+    [SerializeField] private RectTransform fragUI;
     [SerializeField] private GameObject relic;
 
     private Goods goods;
@@ -46,6 +47,7 @@ public class UIManager : MonoBehaviour
 
     public void SetFragText()
     {
+        Debug.Log(goods.frag);
         if (goods.frag >= 10000000)
         {
             fragText.text = goods.frag.ToString("e2");
@@ -61,7 +63,15 @@ public class UIManager : MonoBehaviour
         goldUI.localScale = Vector3.one;
 
         goldUI.DOKill();
-        goldUI.DOPunchScale(Vector3.one * 0.5f, 0.15f, 1, 1f);
+        goldUI.DOPunchScale(Vector3.one * 0.3f, 0.1f, 1, 1f);
+    }
+
+    public void FragEffect()
+    {
+        fragUI.localScale = Vector3.one;
+
+        fragUI.DOKill();
+        fragUI.DOPunchScale(Vector3.one * 0.3f, 0.1f, 1, 1f);
     }
 
     public void ActiveRelic()
