@@ -18,6 +18,8 @@ public class ProjectManager : MonoBehaviour, IWindow
     [SerializeField] private Transform projectParent;
 
     [SerializeField] private Button reinforceBtn;
+    [SerializeField] private Image radial;
+    [SerializeField] private TMP_Text timer;
 
     [SerializeField] private GameObject notice;
 
@@ -219,9 +221,11 @@ public class ProjectManager : MonoBehaviour, IWindow
 
     private void SetProject(int id)
     {
+        if(work.projectID != -1) projectParent.GetChild(work.projectID).GetChild(1).GetComponent<Image>().color = Color.green;
         projectDetail.gameObject.SetActive(true);
         ProjectData projectData = DataManger.Instance.GetProjectData(id);
         work.projectID = id;
+        projectParent.GetChild(work.projectID).GetChild(1).GetComponent<Image>().color = Color.yellow;
         projectDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = projectData.dataName;
         projectDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = projectData.max + " 작업량";
         projectDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
@@ -278,12 +282,32 @@ public class ProjectManager : MonoBehaviour, IWindow
         slider.value = max;
         rateText.text = "100.00%";
 
-        while (cur > 0)
+        float remainTime = 30f;
+        timer.text = "30:00";
+
+        while (cur > 0 && remainTime > 0f)
         {
             float time = 1f * (1 - tempUpgrade.upgrade[workSpeedTemp.Key] * workSpeedTemp.Value.value)
                             * (1 - (permUpgrade.complete.Contains(workSpeedPerm.Key) ? workSpeedPerm.Value.value : 0));
 
-            yield return new WaitForSeconds(time);
+            float t = 0f;
+            radial.fillAmount = 0f;
+            while (t < time)
+            {
+                t += Time.deltaTime;
+                remainTime -= Time.deltaTime;
+
+                if (remainTime < 0f) break;
+
+                radial.fillAmount = Mathf.Clamp01(t / time);
+
+                int sec = Mathf.FloorToInt(remainTime);
+                int msec = Mathf.FloorToInt(remainTime % 1f * 100);
+                timer.text = string.Format("{0:00}:{1:00}", sec, msec);
+
+                yield return null;
+            }
+
             power = 0;
             foreach (UnitInfo unitInfo in unit.units)
             {
@@ -302,10 +326,19 @@ public class ProjectManager : MonoBehaviour, IWindow
             slider.value = cur;
             rateText.text = rate.ToString("F2") + "%";
         }
-        goods.gold += Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
+
+        if (remainTime > 0f)
+        {
+            goods.gold += Mathf.RoundToInt(projectData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)
                                                             * (1 + (permUpgrade.complete.Contains(goldGainPerm.Key) ? goldGainPerm.Value.value : 0)));
-        work.outsourcingMax += projectData.unitMax;
-        work.completeProject.Add(projectData.id);
+            work.outsourcingMax += projectData.unitMax;
+            work.completeProject.Add(projectData.id);
+        }
+        else
+        {
+            Debug.Log("시간 초과");
+        }
+        
         projectDetail.gameObject.SetActive(false);
         notice.SetActive(true);
 

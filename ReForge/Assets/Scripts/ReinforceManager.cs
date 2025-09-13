@@ -128,12 +128,14 @@ public class ReinforceManager : MonoBehaviour, IWindow
     {
         AutoManager.OnBuyUnit += HandleAutoBuy;
         AutoManager.OnUpgradeUnit += (unitList) => HandleAutoUpgrade(unitList);
+        DataManger.OnTryReset += Reset;
     }
 
     private void OnDisable()
     {
         AutoManager.OnBuyUnit -= HandleAutoBuy;
         AutoManager.OnUpgradeUnit -= (unitList) => HandleAutoUpgrade(unitList);
+        DataManger.OnTryReset -= Reset;
     }
 
     private void Setting()
@@ -353,7 +355,7 @@ public class ReinforceManager : MonoBehaviour, IWindow
         for (int i = 0; i < upgrade + 1; i++)
         {
             GameObject star = Instantiate(starPrefab, starParent);
-            star.transform.localPosition += new Vector3(-5 * upgrade + 10 * i, 8, 0);
+            star.transform.localPosition += new Vector3(-5 * upgrade + 10 * i, 0, 0);
         }
         int totalWork = Mathf.RoundToInt(unitData.power * (1 + tempUpgrade.upgrade[workTemp.Key] * workTemp.Value.value)
                                         * (1 + (permUpgrade.complete.Contains(workPerm.Key) ? workPerm.Value.value : 0))

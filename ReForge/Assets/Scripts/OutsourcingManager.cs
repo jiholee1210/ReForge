@@ -41,7 +41,6 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private bool inWindow = false;
     private List<GameObject> objectList = new();
-
     async void Start()
     {
         unit = DataManger.Instance.unit;
@@ -218,9 +217,11 @@ public class OutsourcingManager : MonoBehaviour, IWindow
 
     private void SetOutsourcing(int id)
     {
+        if(work.outsourcingID != -1) outsourcingParent.GetChild(work.outsourcingID).GetChild(1).GetComponent<Image>().color = Color.green;
         outsourcingDetail.gameObject.SetActive(true);
         OutsourcingData outsourcingData = DataManger.Instance.GetOutsourcingData(id);
         work.outsourcingID = id;
+        outsourcingParent.GetChild(work.outsourcingID).GetChild(1).GetComponent<Image>().color = Color.yellow;
         outsourcingDetail.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = outsourcingData.dataName;
         outsourcingDetail.GetChild(2).GetChild(1).GetComponent<TMP_Text>().text = outsourcingData.max + " 작업량";
         outsourcingDetail.GetChild(2).GetChild(2).GetComponent<TMP_Text>().text = Mathf.RoundToInt(outsourcingData.reward * (1 + tempUpgrade.upgrade[goldGainTemp.Key] * goldGainTemp.Value.value)

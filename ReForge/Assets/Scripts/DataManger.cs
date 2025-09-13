@@ -14,6 +14,9 @@ public class DataManger : MonoBehaviour
 
     [SerializeField] private Button save;
     [SerializeField] private Button bankrupt;
+    [SerializeField] private Button accept;
+    [SerializeField] private Button cancel;
+    [SerializeField] private GameObject tryBankrupt;
 
     public Dictionary<int, UnitData> unitDataDict;
     public Dictionary<int, OutsourcingData> outsourcingDataDict;
@@ -73,7 +76,9 @@ public class DataManger : MonoBehaviour
         if (permUpgrade.complete.Contains(11)) UIManager.Instance.ActiveRelic();
         StartCoroutine(AutoSave());
         save.onClick.AddListener(() => SaveAll());
-        bankrupt.onClick.AddListener(() => ResetData());
+        bankrupt.onClick.AddListener(() => TryBankrupt());
+        accept.onClick.AddListener(() => ResetData());
+        cancel.onClick.AddListener(() => CancelBankrupt());
     }
 
     private IEnumerator AutoSave()
@@ -296,6 +301,17 @@ public class DataManger : MonoBehaviour
         UIManager.Instance.SetGoldText();
         UIManager.Instance.SetFragText();
         OnTryReset?.Invoke();
+        CancelBankrupt();
+    }
+
+    public void TryBankrupt()
+    {
+        tryBankrupt.SetActive(true);
+    }
+
+    public void CancelBankrupt()
+    {
+        tryBankrupt.SetActive(false);
     }
 }
 

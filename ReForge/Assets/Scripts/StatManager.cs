@@ -38,6 +38,16 @@ public class StatManager : MonoBehaviour, IWindow
         );
     }
 
+    void OnEnable()
+    {
+        DataManger.OnTryReset += Reset;
+    }
+
+    void OnDisable()
+    {
+        DataManger.OnTryReset -= Reset;
+    }
+
     private void SetStat()
     {
         for (int i = 0; i < statTexts.Length; i++)
